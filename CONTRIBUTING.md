@@ -143,7 +143,7 @@ In this project, we use three main CI/CD jobs to help uphold the principles of d
 - `python-package.yml`  
 This workflow installs project dependencies, runs linting tools, and executes our unit tests. It's our first line of defense against breaking changes and helps us make sure nothing sneaky slips through when new code is added.  
 
-  >![NOTE]
+  >[!NOTE]
   >This workflow runs every time there is a new pull request that is attempting to push to main
 
 - `codeql.yml`  
