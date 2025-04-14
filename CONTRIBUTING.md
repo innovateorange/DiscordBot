@@ -143,14 +143,14 @@ In this project, we use three main CI/CD jobs to help uphold the principles of d
 - `python-package.yml`  
 This workflow installs project dependencies, runs linting tools, and executes our unit tests. It's our first line of defense against breaking changes and helps us make sure nothing sneaky slips through when new code is added.  
 
-  >[!NOTE]
-  >This workflow runs every time there is a new pull request that is attempting to push to main
+  - > [!NOTE]
+    > This workflow runs every time there is a new pull request that is attempting to push to main
 
 - `codeql.yml`  
 CodeQL analyzes the codebase for potential security vulnerabilities. It searches for code patterns that could lead to bugs or exploits and helps catch more significant issues that traditional testing might miss.
   
-  >[!NOTE]
-  >This workflow runs everytime there is a new pull request that is attempting to push to main
+  - > [!NOTE]
+    > This workflow runs everytime there is a new pull request that is attempting to push to main
 
 - `dependabot.yml`  
 Dependabot automatically monitors our dependencies and opens pull requests when updates are available. This helps us stay current with library versions and patch known security issues before they become an issue.
