@@ -149,7 +149,7 @@ This workflow installs project dependencies, runs linting tools, and executes ou
 - `codeql.yml`  
 CodeQL analyzes the codebase for potential security vulnerabilities. It searches for code patterns that could lead to bugs or exploits and helps catch more significant issues that traditional testing might miss.
   
-  >![NOTE]
+  >[!NOTE]
   >This workflow runs everytime there is a new pull request that is attempting to push to main
 
 - `dependabot.yml`  
