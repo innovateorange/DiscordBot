@@ -6,20 +6,18 @@ on:
     branches: ["main", 'stable/*']
     paths:
       - '**/*.py'
-      - '**/*.pyi'
       - 'requirements.txt'
       - 'setup.py'
-      - 'pyproject.toml'
       - 'noxfile.py'
   pull_request:
     branches: ["main", 'stable/*']
     paths:
       - '**/*.py'
-      - '**/*.pyi'
       - 'requirements.txt'
       - 'setup.py'
-      - 'pyproject.toml'
       - 'noxfile.py'
+permissions:
+  contents: read # access to check out code and install dependencies
 jobs:
   build:
     runs-on: ${{ matrix.os }}
