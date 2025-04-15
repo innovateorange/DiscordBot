@@ -37,8 +37,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            ~/.cache/pip
-            ~/.cache/nox
+            RUNNER_TOOL_CACHE/Python/*
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}-${{ hashFiles('**/pyproject.toml') }}-${{ hashFiles('**/noxfile.py') }}
           restore-keys: |
             ${{ runner.os }}-pip-
