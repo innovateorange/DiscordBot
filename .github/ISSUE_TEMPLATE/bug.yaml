@@ -15,7 +15,7 @@ body:
       placeholder: Tell us what you see!
       value: |
         <!-- Please describe what happened here. -->
-        
+
         ### Expected behavior
         <!-- Please describe what you expected to happen. -->
 
@@ -27,9 +27,9 @@ body:
 
         ### Checklist
         - [ ] I have checked that the issue has not already been reported
-        - [ ] I have included repoducible steps
+        - [ ] I have included reproducible steps
         - [ ] I am using the latest version of the project (running off of main)
-        - [ ] I have included any screenshots that may help out udnerstand the issue
+        - [ ] I have included any screenshots that may help out understand the issue
     validations:
       required: true
   - type: dropdown
