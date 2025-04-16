@@ -22,7 +22,7 @@ body:
     validations:
       required: true
   - type: dropdown
-    id: Operating System
+    id: os
     attributes:
       label: Operating System
       description: What operating system are you using?
