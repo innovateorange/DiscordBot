@@ -56,7 +56,7 @@ body:
         - label: I have checked that the issue has not already been reported
         - label: I have included reproducible steps
         - label: I am using the latest version of the project (running off of main)
-        - label: I have included any screenshots that may help out understand the issue
+        - label: I have included any screenshots that may help us understand the issue
     validations:
       required: true
   - type: dropdown
