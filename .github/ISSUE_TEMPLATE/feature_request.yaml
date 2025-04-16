@@ -1,0 +1,43 @@
+name: Feature Request
+description: Suggest a new feature or improvement.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this feature request!
+  - type: textarea
+    id: what-feature
+    attributes:
+      label: What feature do you want to see?
+      description: Please describe the feature you would like to see.
+      placeholder: Tell us what you want!
+      value: |
+        ### Feature request
+        <!-- Please describe the feature you would like to see. -->
+        
+        ### Additional context
+        <!-- Please provide any additional context that may help us understand the feature. -->
+        
+        ### Checklist
+        - [ ] I have checked that the feature has not already been requested
+        - [ ] I have included any screenshots that may help out udnerstand the issue
+    validations:
+      required: true
+  - type: Reccomendations
+    id: recommendations
+    attributes:
+      label: Recommendations
+      description: Please provide any recommendations for how this feature could be implemented (if applicable).
+      placeholder: Tell us what you think!
+      value: |
+        ### Recommendations
+        <!-- Please provide any recommendations for how this feature could be implemented. -->
+    validations:
+      required: false
+  - type: markdown
+    id: contributing
+    attributes:
+      value: |
+        > [!Note] Please refer to the [CONTRIBUTING.md](https://github.com/innovateorange/DiscordBot/blob/main/CONTRIBUTING.md) file for more information on how to contribute to this project.
