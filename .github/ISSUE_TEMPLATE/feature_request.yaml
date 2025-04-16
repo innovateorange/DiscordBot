@@ -44,8 +44,11 @@ body:
       description: Please check all that apply.
       options:
         - I have checked that the feature has not already been requested
+    validations:
+      required: false
   - type: markdown
     id: contributing
     attributes:
       value: |
         > **Please refer to the [CONTRIBUTING.md](https://github.com/innovateorange/DiscordBot/blob/main/CONTRIBUTING.md) file for more information on how to contribute to this project.**
+
