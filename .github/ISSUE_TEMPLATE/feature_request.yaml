@@ -43,7 +43,7 @@ body:
       label: Checklist
       description: Please check all that apply.
       options:
-        - I have checked that the feature has not already been requested
+        - label: I have checked that the feature has not already been requested
     validations:
       required: false
   - type: markdown
