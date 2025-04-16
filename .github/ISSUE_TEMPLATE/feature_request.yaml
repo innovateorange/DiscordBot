@@ -15,13 +15,6 @@ body:
       placeholder: Tell us what you want!
       value: |
         <!-- Please describe the feature you would like to see here. -->
-        
-        ### Additional context
-        <!-- Please provide any additional context that may help us understand the feature. -->
-        
-        ### Checklist
-        - [ ] I have checked that the feature has not already been requested
-        - [ ] I have included any screenshots that may help out udnerstand the issue
     validations:
       required: true
   - type: textarea
@@ -34,6 +27,23 @@ body:
         <!-- Please provide any recommendations for how this feature could be implemented here. -->
     validations:
       required: false
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: Additional Information
+      description: Please provide any additional information that may help us understand the feature.
+      placeholder: Tell us what you think!
+      value: |
+        <!-- Please provide any additional information that may help us understand the feature here. -->
+    validations:
+      required: false
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      description: Please check all that apply.
+      options:
+        - I have checked that the feature has not already been requested
   - type: markdown
     id: contributing
     attributes:
