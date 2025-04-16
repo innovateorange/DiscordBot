@@ -40,4 +40,4 @@ body:
     id: contributing
     attributes:
       value: |
-        >Please refer to the [CONTRIBUTING.md](https://github.com/innovateorange/DiscordBot/blob/main/CONTRIBUTING.md) file for more information on how to contribute to this project.
+        > **Please refer to the [CONTRIBUTING.md](https://github.com/innovateorange/DiscordBot/blob/main/CONTRIBUTING.md) file for more information on how to contribute to this project.**
