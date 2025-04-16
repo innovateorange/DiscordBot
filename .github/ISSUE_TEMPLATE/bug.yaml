@@ -47,18 +47,6 @@ body:
         <!-- Please provide any additional context that may help us understand the issue here. -->
     validations:
       required: false
-  - type: checkboxes
-    id: checklist
-    attributes:
-      label: Checklist
-      description: Please check all that apply.
-      options:
-        - label: I have checked that the issue has not already been reported
-        - label: I have included reproducible steps
-        - label: I am using the latest version of the project (running off of main)
-        - label: I have included any screenshots that may help us understand the issue
-    validations:
-      required: true
   - type: dropdown
     id: os
     attributes:
@@ -77,3 +65,15 @@ body:
       label: Relevant log output
       description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
       render: shell
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      description: Please check all that apply.
+      options:
+        - label: I have checked that the issue has not already been reported
+        - label: I have included reproducible steps
+        - label: I am using the latest version of the project (running off of main)
+        - label: I have included any screenshots that may help us understand the issue
+    validations:
+      required: true
