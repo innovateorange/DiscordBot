@@ -29,6 +29,7 @@ body:
         - Windows
         - MacOS
         - Linux
+      default: Windows
     validations:
       required: true
   - type: textarea
