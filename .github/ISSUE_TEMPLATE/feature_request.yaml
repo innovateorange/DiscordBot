@@ -10,11 +10,10 @@ body:
   - type: textarea
     id: what-feature
     attributes:
-      label: What feature do you want to see?
+      label: Feature Request
       description: Please describe the feature you would like to see.
       placeholder: Tell us what you want!
       value: |
-        ### Feature request
         <!-- Please describe the feature you would like to see. -->
         
         ### Additional context
@@ -32,7 +31,6 @@ body:
       description: Please provide any recommendations for how this feature could be implemented (if applicable).
       placeholder: Tell us what you think!
       value: |
-        ### Recommendations
         <!-- Please provide any recommendations for how this feature could be implemented. -->
     validations:
       required: false
