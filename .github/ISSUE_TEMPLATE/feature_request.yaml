@@ -14,7 +14,7 @@ body:
       description: Please describe the feature you would like to see.
       placeholder: Tell us what you want!
       value: |
-        <!-- Please describe the feature you would like to see. -->
+        <!-- Please describe the feature you would like to see here. -->
         
         ### Additional context
         <!-- Please provide any additional context that may help us understand the feature. -->
@@ -31,7 +31,7 @@ body:
       description: Please provide any recommendations for how this feature could be implemented (if applicable).
       placeholder: Tell us what you think!
       value: |
-        <!-- Please provide any recommendations for how this feature could be implemented. -->
+        <!-- Please provide any recommendations for how this feature could be implemented here. -->
     validations:
       required: false
   - type: markdown

@@ -14,8 +14,7 @@ body:
       description: Also tell us, what did you expect to happen?
       placeholder: Tell us what you see!
       value: |
-        ### What happened?
-        <!-- Please describe what happened. -->
+        <!-- Please describe what happened here. -->
         
         ### Expected behavior
         <!-- Please describe what you expected to happen. -->
