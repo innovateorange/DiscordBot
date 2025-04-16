@@ -25,7 +25,7 @@ body:
         - [ ] I have included any screenshots that may help out udnerstand the issue
     validations:
       required: true
-  - type: Reccomendations
+  - type: textarea
     id: recommendations
     attributes:
       label: Recommendations
