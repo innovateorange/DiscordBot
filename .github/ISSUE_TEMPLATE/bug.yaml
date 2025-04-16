@@ -45,8 +45,8 @@ body:
       placeholder: Tell us what you think!
       value: |
         <!-- Please provide any additional context that may help us understand the issue here. -->
-      validations:
-        required: false
+    validations:
+      required: false
   - type: checkboxes
     id: checklist
     attributes:
@@ -57,8 +57,8 @@ body:
         - label: I have included reproducible steps
         - label: I am using the latest version of the project (running off of main)
         - label: I have included any screenshots that may help out understand the issue
-      validations:
-        required: true
+    validations:
+      required: true
   - type: dropdown
     id: os
     attributes:
