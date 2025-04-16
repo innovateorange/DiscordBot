@@ -21,6 +21,17 @@ body:
         Hello, my name is Caleb!
     validations:
       required: true
+  - type: dropdown
+    id: Operating System
+    attributes:
+      label: What operating system are you using?
+      description: Please select the operating system you are using.
+      options:
+        - Windows
+        - macOS
+        - Linux
+      validations:
+        required: true
   - type: textarea
     id: logs
     attributes:
