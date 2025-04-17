@@ -9,7 +9,7 @@ included in the ReadMe file of this repo:
 
 ## Contributing to Discord Bot Project
 
-## Style and lint
+### Style and lint
 
 Discord Bot Project uses two tools to verify code formatting and lint checking. The
 first tool is [black](https://github.com/psf/black) which is a code formatting
@@ -28,9 +28,40 @@ installed to run this command. You can do this with `pip install -U nox`.
 automatically update the code formatting to conform to the style. However,
 if `ruff` returns any error, you will have to resolve these issues by manually updating your code.
 
-When you want to contribute to the Discord Bot Project, you will need to create a new branch where you will be staging your changes.
+### Creating a new issue
+
+This is where contributions begin within our project.
+
+We use custom issue templates to streamline how you report bugs, suggest new features, or track tasks. To create an issue within the repository:
+1. Navigate to the main page of the repository.
+2. Under the repository name, click **Issues**.
+![Screenshot of Issues tab](https://github.com/user-attachments/assets/de42d43f-b0ea-4e4d-a5c9-b5bafaa30cec)
+3. Click **New Issue**
+![Screenshot of New Issue button](https://cdn.discordapp.com/attachments/280059731249201164/1362294261743091774/Screenshot_2025-04-17_011024.png?ex=6801dee6&is=68008d66&hm=f75358fbe9364f0603011d762c8aca450227d431f1e3133ddf5f60cf54feccc2&)
+4. Choose an issue template that is relevant to the task you are creating based on the following:
+![Screenshot of Issue Templates](https://cdn.discordapp.com/attachments/280059731249201164/1362297577982136420/image.png?ex=6801e1fc&is=6800907c&hm=43d4fde8f4efb9f2c5938a6a46f568c3e4335fbf936b6513f9af51353f9bd45d&)
+
+- **Bug Report**
+
+  Use this template if something isn't working as expected. You'll be prompted to
+  - Describe what happened and what you expected.
+  - Outline the steps to reproduce the issue.
+  - Optionally attach screenshots or logs.
+- **Feature Request**
+
+  Use this when suggesting a new idea or improvement. You'll be asked to:
+  - Describe the feature and its purpose.
+  - Explain the motivation or problem it solves.
+  - Suggest possible alternatives or solutions.
+
+> [!NOTE] 
+> For all other issue types (e.g., documentation, research, workflows), please fill out a blank issue stating the information needed to resolve the task.
+
+These templates ensure that issues are organized and easier for maintainers to address. Please fill them out thoroughly!
 
 ### Creating a new branch
+
+When you want to contribute to the Discord Bot Project, you will need to create a new branch where you will be staging your changes.
 
 You can do this by running the git checkout command:
 

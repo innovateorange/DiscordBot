@@ -1,23 +1,12 @@
 name: Bug Report
 description: File a bug report.
 title: "[Bug]: "
-labels: ["bug", "triage"]
-projects: ["octo-org/1", "octo-org/44"]
-assignees:
-  - octocat
+labels: ["bug"]
 body:
   - type: markdown
     attributes:
       value: |
         Thanks for taking the time to fill out this bug report!
-  - type: input
-    id: contact
-    attributes:
-      label: Contact Details
-      description: How can we get in touch with you if we need more info?
-      placeholder: ex. email@example.com
-    validations:
-      required: false
   - type: textarea
     id: what-happened
     attributes:
@@ -25,31 +14,51 @@ body:
       description: Also tell us, what did you expect to happen?
       placeholder: Tell us what you see!
       value: |
-        **Introduction**
-        Hello, my name is Caleb!
+        <!-- Please describe what happened here. -->
     validations:
       required: true
-  - type: dropdown
-    id: version
+  - type: textarea
+    id: expected
     attributes:
-      label: Version
-      description: What version of our software are you running?
+      label: Expected behavior
+      description: Please describe what you expected to happen.
+      placeholder: Tell us what you expected to happen!
+      value: |
+        <!-- Please describe what you expected to happen here. -->
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Please describe the steps to reproduce the issue.
+      placeholder: Tell us what you expected to happen!
+      value: |
+        <!-- Please describe the steps to reproduce the issue here. -->
+    validations:
+      required: true
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Please provide any additional context that may help us understand the issue.
+      placeholder: Tell us what you think!
+      value: |
+        <!-- Please provide any additional context that may help us understand the issue here. -->
+    validations:
+      required: false
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      description: What operating system are you using?
       options:
-        - 1.0.2 (Default)
-        - 1.0.3 (Edge)
+        - Windows
+        - MacOS
+        - Linux
       default: 0
     validations:
       required: true
-  - type: dropdown
-    id: browsers
-    attributes:
-      label: What browsers are you seeing the problem on?
-      multiple: true
-      options:
-        - Firefox
-        - Chrome
-        - Safari
-        - Microsoft Edge
   - type: textarea
     id: logs
     attributes:
@@ -57,10 +66,14 @@ body:
       description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
       render: shell
   - type: checkboxes
-    id: terms
+    id: checklist
     attributes:
-      label: Code of Conduct
-      description: By submitting this issue, you agree to follow our [Code of Conduct](https://example.com). 
+      label: Checklist
+      description: Please check all that apply.
       options:
-        - label: I agree to follow this project's Code of Conduct
-          required: true
+        - label: I have checked that the issue has not already been reported
+        - label: I have included reproducible steps
+        - label: I am using the latest version of the project (running off of main)
+        - label: I have included any screenshots that may help us understand the issue
+    validations:
+      required: true
