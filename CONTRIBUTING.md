@@ -59,6 +59,56 @@ We use custom issue templates to streamline how you report bugs, suggest new fea
 
 These templates ensure that issues are organized and easier for maintainers to address. Please fill them out thoroughly!
 
+### Setting up your virtual environment (.venv)
+
+Working on Python projects, it's generally a good idea to use virtual environments to prevent library conflicts. Here's how you can set up a virtual environment for this project:
+
+**On macOS/Linux:**
+
+1.  **Run the setup script**  
+    Navigate to the project directory and execute the `setup.sh` script to create and configure the virtual environment:
+    ```bash
+    ./setup.sh
+    ```
+    This script automates the creation, activation, and dependency installation.
+
+2.  **Activate manually (if needed)**
+    ```bash
+    source .virtualenv/bin/activate
+    ```
+
+**On Windows:**
+
+1.  **Create the virtual environment**  
+    Open Command Prompt or PowerShell, navigate to the project directory, and run:
+    ```powershell
+    python -m venv .virtualenv
+    ```
+
+2.  **Activate the virtual environment**
+    ```powershell
+    .\.virtualenv\Scripts\activate
+    ```
+
+3.  **Upgrade `pip` and install dependencies**  
+    Once activated, run:
+    ```powershell
+    python -m pip install --upgrade pip
+    pip install -r requirements.txt
+    ```
+`
+**Deactivating (All Platforms):**
+
+When you're done working, deactivate the virtual environment by running:
+```bash
+deactivate
+```
+
+> [!NOTE]
+> Make sure to activate the virtual environment every time you work on the project to ensure you're using the correct dependencies.
+
+This setup ensures that your development environment is isolated and consistent with the project's requirements.
+
 ### Creating a new branch
 
 When you want to contribute to the Discord Bot Project, you will need to create a new branch where you will be staging your changes.
@@ -77,6 +127,33 @@ git checkout -b <new_branch_name>
 > ```bash
 > git branch
 > ```
+
+Please test your code! Here are instructions for testing the bot.
+
+### Testing the Bot Locally
+
+Since we currently don't have a hosting solution, you'll need to run the bot locally to test your changes. Here's how to do it:
+
+1. Make sure you have all the required dependencies installed:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. Create a `.env` file in the root directory with your bot token (you can find this on our BitWarden):
+   ```env
+   DISCORD_TOKEN=your_bot_token_here
+   ```
+
+3. Run the bot:
+   ```bash
+   python bot.py
+   ```
+
+The bot will start up and connect to Discord. You can test your changes by interacting with the bot on your Discord server. Make sure to test all the functionality you've modified or added to ensure everything works as expected.
+
+> [!NOTE]
+> Keep our bot token secure and never commit it to the repository. The `.env` file is already in the `.gitignore` to prevent accidental commits.
+
 
 Once you are ready to push your code to the branch that you created, you have to stage the changes.
 
