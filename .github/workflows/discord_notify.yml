@@ -23,3 +23,6 @@ jobs:
         run: python notify_discord.py
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+      
+      - name: Dump GitHub event payload
+        run: cat "$GITHUB_EVENT_PATH"
