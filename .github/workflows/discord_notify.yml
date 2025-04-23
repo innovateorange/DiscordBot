@@ -1,7 +1,7 @@
 name: Notify Discord on Mentions
 
 on:
-  issue:
+  issues:
     types: [assigned]
   issue_comment:
     types: [created]
