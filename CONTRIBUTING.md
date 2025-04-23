@@ -9,7 +9,7 @@ included in the ReadMe file of this repo:
 
 ## Contributing to Discord Bot Project
 
-## Style and lint
+### Style and lint
 
 Discord Bot Project uses two tools to verify code formatting and lint checking. The
 first tool is [black](https://github.com/psf/black) which is a code formatting
@@ -28,9 +28,90 @@ installed to run this command. You can do this with `pip install -U nox`.
 automatically update the code formatting to conform to the style. However,
 if `ruff` returns any error, you will have to resolve these issues by manually updating your code.
 
-When you want to contribute to the Discord Bot Project, you will need to create a new branch where you will be staging your changes.
+### Creating a new issue
+
+This is where contributions begin within our project.
+
+We use custom issue templates to streamline how you report bugs, suggest new features, or track tasks. To create an issue within the repository:
+1. Navigate to the main page of the repository.
+2. Under the repository name, click **Issues**.
+![Screenshot of Issues tab](https://github.com/user-attachments/assets/de42d43f-b0ea-4e4d-a5c9-b5bafaa30cec)
+3. Click **New Issue**
+![Screenshot of New Issue button](https://cdn.discordapp.com/attachments/280059731249201164/1362294261743091774/Screenshot_2025-04-17_011024.png?ex=6801dee6&is=68008d66&hm=f75358fbe9364f0603011d762c8aca450227d431f1e3133ddf5f60cf54feccc2&)
+4. Choose an issue template that is relevant to the task you are creating based on the following:
+![Screenshot of Issue Templates](https://cdn.discordapp.com/attachments/280059731249201164/1362297577982136420/image.png?ex=6801e1fc&is=6800907c&hm=43d4fde8f4efb9f2c5938a6a46f568c3e4335fbf936b6513f9af51353f9bd45d&)
+
+- **Bug Report**
+
+  Use this template if something isn't working as expected. You'll be prompted to
+  - Describe what happened and what you expected.
+  - Outline the steps to reproduce the issue.
+  - Optionally attach screenshots or logs.
+- **Feature Request**
+
+  Use this when suggesting a new idea or improvement. You'll be asked to:
+  - Describe the feature and its purpose.
+  - Explain the motivation or problem it solves.
+  - Suggest possible alternatives or solutions.
+
+> [!NOTE] 
+> For all other issue types (e.g., documentation, research, workflows), please fill out a blank issue stating the information needed to resolve the task.
+
+These templates ensure that issues are organized and easier for maintainers to address. Please fill them out thoroughly!
+
+### Setting up your virtual environment (.venv)
+
+Working on Python projects, it's generally a good idea to use virtual environments to prevent library conflicts. Here's how you can set up a virtual environment for this project:
+
+**On macOS/Linux:**
+
+1.  **Run the setup script**  
+    Navigate to the project directory and execute the `setup.sh` script to create and configure the virtual environment:
+    ```bash
+    ./setup.sh
+    ```
+    This script automates the creation, activation, and dependency installation.
+
+2.  **Activate manually (if needed)**
+    ```bash
+    source .virtualenv/bin/activate
+    ```
+
+**On Windows:**
+
+1.  **Create the virtual environment**  
+    Open Command Prompt or PowerShell, navigate to the project directory, and run:
+    ```powershell
+    python -m venv .virtualenv
+    ```
+
+2.  **Activate the virtual environment**
+    ```powershell
+    .\.virtualenv\Scripts\activate
+    ```
+
+3.  **Upgrade `pip` and install dependencies**  
+    Once activated, run:
+    ```powershell
+    python -m pip install --upgrade pip
+    pip install -r requirements.txt
+    ```
+`
+**Deactivating (All Platforms):**
+
+When you're done working, deactivate the virtual environment by running:
+```bash
+deactivate
+```
+
+> [!NOTE]
+> Make sure to activate the virtual environment every time you work on the project to ensure you're using the correct dependencies.
+
+This setup ensures that your development environment is isolated and consistent with the project's requirements.
 
 ### Creating a new branch
+
+When you want to contribute to the Discord Bot Project, you will need to create a new branch where you will be staging your changes.
 
 You can do this by running the git checkout command:
 
@@ -46,6 +127,33 @@ git checkout -b <new_branch_name>
 > ```bash
 > git branch
 > ```
+
+Please test your code! Here are instructions for testing the bot.
+
+### Testing the Bot Locally
+
+Since we currently don't have a hosting solution, you'll need to run the bot locally to test your changes. Here's how to do it:
+
+1. Make sure you have all the required dependencies installed:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. Create a `.env` file in the root directory with your bot token (you can find this on our BitWarden):
+   ```env
+   DISCORD_TOKEN=your_bot_token_here
+   ```
+
+3. Run the bot:
+   ```bash
+   python bot.py
+   ```
+
+The bot will start up and connect to Discord. You can test your changes by interacting with the bot on your Discord server. Make sure to test all the functionality you've modified or added to ensure everything works as expected.
+
+> [!NOTE]
+> Keep our bot token secure and never commit it to the repository. The `.env` file is already in the `.gitignore` to prevent accidental commits.
+
 
 Once you are ready to push your code to the branch that you created, you have to stage the changes.
 
