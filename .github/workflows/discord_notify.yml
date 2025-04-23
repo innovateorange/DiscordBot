@@ -20,11 +20,11 @@ jobs:
 
       - name: Install requests
         run: pip install requests
+      
+      - name: Dump GitHub event payload
+        run: cat "$GITHUB_EVENT_PATH"
 
       - name: Notify Discord
         run: python notify_discord.py
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-      
-      - name: Dump GitHub event payload
-        run: cat "$GITHUB_EVENT_PATH"
