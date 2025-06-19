@@ -3,33 +3,33 @@ import json
 import requests
 import re
 
-# Load GitHub event payload
+# Load GitHub context and event payload
+event_name = os.getenv("GITHUB_EVENT_NAME")
+event_action = os.getenv("GITHUB_EVENT_ACTION")
+
 with open(os.getenv("GITHUB_EVENT_PATH"), "r") as f:
     event = json.load(f)
 
-# Load user map
 with open("user_map.json", "r") as f:
     user_map = json.load(f)
 
-webhook = os.getenv("DISCORD_WEBHOOK_URL")
+webhook_url = os.getenv("DISCORD_WEBHOOK_URL")
 
-def post_to_discord(message):
+def post_to_discord(message: str):
     payload = { "content": message }
-    response = requests.post(webhook, json=payload)
+    response = requests.post(webhook_url, json=payload)
     response.raise_for_status()
 
-# Handle assignment or issue/PR opened with assignees
-if "assignees" in event.get("issue", {}) or "assignees" in event.get("pull_request", {}):
-    obj = event.get("issue") or event.get("pull_request")
+def notify_assignment(obj):
     title = obj.get("title", "Untitled")
     url = obj.get("html_url", "")
     assignees = obj.get("assignees", [])
 
-    mentions = []
-    for user in assignees:
-        login = user["login"]
-        if login in user_map:
-            mentions.append(f"<@{user_map[login]}>")
+    mentions = [
+        f"<@{user_map[user['login']]}>"
+        for user in assignees
+        if user["login"] in user_map
+    ]
 
     if mentions:
         message = (
@@ -39,24 +39,35 @@ if "assignees" in event.get("issue", {}) or "assignees" in event.get("pull_reque
         )
         post_to_discord(message)
 
-# Handle comment mentions
-elif "comment" in event:
-    comment = event["comment"]["body"]
-    url = event.get("issue", event.get("pull_request", {})).get("html_url", "")
-    title = event.get("issue", event.get("pull_request", {})).get("title", "Untitled")
+def notify_comment_mention(comment_body: str, context_obj):
+    mentioned_users = re.findall(r"@(\w+)", comment_body)
 
-    mentioned_users = re.findall(r"@(\w+)", comment)
-
-    mentions = []
-    for login in mentioned_users:
-        if login in user_map:
-            mentions.append(f"<@{user_map[login]}>")
+    mentions = [
+        f"<@{user_map[login]]}>"
+        for login in mentioned_users
+        if login in user_map
+    ]
 
     if mentions:
         message = (
             f"💬 **Mention in Comment**\n"
-            f"🔗 [{title}]({url})\n"
+            f"🔗 [{context_obj.get('title', 'Untitled')}]({context_obj.get('html_url', '')})\n"
             f"👤 Mentioned: {', '.join(mentions)}\n"
-            f"📝 \"{comment}\""
+            f"📝 \"{comment_body.strip()}\""
         )
         post_to_discord(message)
+
+# === Event dispatch ===
+
+# 1. Valid assignment events
+if (event_name == "issues" and event_action in ["opened", "assigned"]):
+    notify_assignment(event["issue"])
+
+elif (event_name == "pull_request" and event_action in ["opened", "assigned"]):
+    notify_assignment(event["pull_request"])
+
+# 2. Valid comment events with possible @mentions
+elif event_name in ["issue_comment", "pull_request_review_comment"] and "comment" in event:
+    comment_body = event["comment"]["body"]
+    context_obj = event.get("issue") or event.get("pull_request", {})
+    notify_comment_mention(comment_body, context_obj)
