@@ -43,7 +43,7 @@ def notify_comment_mention(comment_body: str, context_obj):
     mentioned_users = re.findall(r"@(\w+)", comment_body)
 
     mentions = [
-        f"<@{user_map[login]]}>"
+        f"<@{user_map[login]}>"
         for login in mentioned_users
         if login in user_map
     ]
