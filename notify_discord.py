@@ -5,7 +5,9 @@ import re
 
 # Load GitHub context and event payload
 event_name = os.getenv("GITHUB_EVENT_NAME")
-event_action = os.getenv("GITHUB_EVENT_ACTION")
+with open(os.getenv("GITHUB_EVENT_PATH"), "r") as f:
+    event = json.load(f)
+event_action = event.get("action")
 
 with open(os.getenv("GITHUB_EVENT_PATH"), "r") as f:
     event = json.load(f)
