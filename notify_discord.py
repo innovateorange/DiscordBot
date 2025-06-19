@@ -9,6 +9,8 @@ with open(os.getenv("GITHUB_EVENT_PATH"), "r") as f:
 # Load GitHub-to-Discord user map
 with open("user_map.json", "r") as f:
     user_map = json.load(f)
+    
+comment = ""
 
 def post_to_discord(message):
     discord_webhook = os.getenv("DISCORD_WEBHOOK_URL")
