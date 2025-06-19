@@ -27,9 +27,6 @@ jobs:
         run: python notify_discord.py
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          
-      - name: Upload event dump
-        uses: actions/upload-artifact@v4
-        with:
-          name: github-event-payload
-          path: event_dump.json
+
+      - name: JSON event dump
+        run: echo "${{ toJson(github.event) }}" > event.json
