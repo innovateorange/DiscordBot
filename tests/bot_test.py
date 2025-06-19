@@ -73,8 +73,10 @@ class TestCSClubBot(unittest.IsolatedAsyncioTestCase):
     @patch("bot.bot.run", side_effect=discord.LoginFailure("invalid_token"))
     @patch("os.getenv", return_value="invalid_token")
     @patch("bot.load_dotenv", return_value=True)
-    @patch("sys.exit")  
-    def test_env_with_invalid_token(self, mock_exit, mock_load_dotenv, mock_getenv, mock_bot_run):
+    @patch("sys.exit")
+    def test_env_with_invalid_token(
+        self, mock_exit, mock_load_dotenv, mock_getenv, mock_bot_run
+    ):
         """Test if .env is found and DISCORD_BOT_TOKEN is invalid"""
         run_bot()
         mock_bot_run.assert_called_once_with("invalid_token")
