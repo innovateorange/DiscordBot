@@ -19,14 +19,20 @@ bot = commands.Bot(command_prefix="!", intents=intents, help_command=None)
 # prints a message when the bot is ready in the terminal.
 @bot.event
 async def on_ready():
-    """Event: Called when the bot logs in successfully."""
+    """
+    Handles the event when the bot has successfully connected to Discord and is ready to operate.
+    """
     print(f"✅ Logged in as {bot.user}")
 
 
 # Welcome message when a new member joins the server (requires privileged intent)
 @bot.event
 async def on_member_join(member: discord.Member) -> None:
-    """Event: Called when a new member joins the server."""
+    """
+    Sends a welcome message when a new member joins the server.
+    
+    Attempts to post the welcome message in a suitable channel (e.g., "welcome", "general", "introductions", or "lobby"), falling back to the system channel or the first available text channel if necessary. If no appropriate channel is found, sends a direct message to the new member. The welcome message includes a mention of the "networking" channel if it exists.
+    """
     # Try to find a welcome channel (common names: welcome, general, etc.)
     welcome_channel: discord.TextChannel | None = None
 
@@ -83,7 +89,9 @@ async def on_member_join(member: discord.Member) -> None:
 # !help command placeholder
 @bot.command()
 async def help(ctx) -> None:
-    """Command: Lists all available bot commands."""
+    """
+    Sends a message listing all available bot commands and their descriptions in the current channel.
+    """
     help_message = (
         "**🤖 BugBot Commands:**\n"
         "`!resume` – Link to engineering resume resources\n"
@@ -96,7 +104,9 @@ async def help(ctx) -> None:
 # !resume command placeholder
 @bot.command()
 async def resume(ctx) -> None:
-    """Command: Sends a link to resume resources."""
+    """
+    Sends a link to engineering resume resources in response to the !resume command.
+    """
     await ctx.send(
         "📄 Resume Resources: https://www.reddit.com/r/EngineeringResumes/wiki/index/"
     )
@@ -105,7 +115,9 @@ async def resume(ctx) -> None:
 # !events command placeholder
 @bot.command()
 async def events(ctx) -> None:
-    """Command: Sends a list of upcoming events."""
+    """
+    Sends a message listing upcoming club events and their dates in response to the `!events` command.
+    """
     await ctx.send(
         "📅 Upcoming Events:\n"
         "- April 12: Git Workshop\n"
@@ -117,7 +129,9 @@ async def events(ctx) -> None:
 # !resources command placeholder
 @bot.command()
 async def resources(ctx) -> None:
-    """Command: Sends recommended CS learning resources."""
+    """
+    Sends a list of recommended computer science learning resources to the channel in response to the `!resources` command.
+    """
     await ctx.send(
         "📚 CS Learning Resources:\n"
         "- [CS50](https://cs50.harvard.edu)\n"
@@ -128,6 +142,11 @@ async def resources(ctx) -> None:
 
 
 def run_bot() -> None:
+    """
+    Loads environment variables, retrieves the Discord bot token, and starts the bot.
+    
+    Exits the program with an error message if the environment file is missing or the token is invalid.
+    """
     if load_dotenv():
         token = os.getenv("DISCORD_BOT_TOKEN")
         assert token, "DISCORD_BOT_TOKEN can not be empty or None"

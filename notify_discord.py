@@ -191,9 +191,9 @@ def notify_comment_mention(comment_body: str, context_obj, user_map, webhook_url
 
 def main():
     """
-    Entry point for handling GitHub webhook events and dispatching notifications to Discord.
+    Handles GitHub webhook events and sends corresponding notifications to Discord.
+    Determines the event type and action, loads configuration and user mapping, and dispatches notifications for issue assignments, pull request review requests, pull request review state changes, and user mentions in comments.
 
-    Determines the event type and action, loads configuration and user mapping, and invokes the appropriate notification function to post a formatted message to a Discord channel via webhook. Supports notifications for issue assignments, pull request review requests, pull request review state changes, and user mentions in comments.
     """
     event_name, event_action, event = load_event_context()
     user_map = load_user_map()
