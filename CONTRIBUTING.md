@@ -59,6 +59,56 @@ We use custom issue templates to streamline how you report bugs, suggest new fea
 
 These templates ensure that issues are organized and easier for maintainers to address. Please fill them out thoroughly!
 
+### Setting up your virtual environment (.venv)
+
+Working on Python projects, it's generally a good idea to use virtual environments to prevent library conflicts. Here's how you can set up a virtual environment for this project:
+
+**On macOS/Linux:**
+
+1.  **Run the setup script**  
+    Navigate to the project directory and execute the `setup.sh` script to create and configure the virtual environment:
+    ```bash
+    ./setup.sh
+    ```
+    This script automates the creation, activation, and dependency installation.
+
+2.  **Activate manually (if needed)**
+    ```bash
+    source .virtualenv/bin/activate
+    ```
+
+**On Windows:**
+
+1.  **Create the virtual environment**  
+    Open Command Prompt or PowerShell, navigate to the project directory, and run:
+    ```powershell
+    python -m venv .virtualenv
+    ```
+
+2.  **Activate the virtual environment**
+    ```powershell
+    .\.virtualenv\Scripts\activate
+    ```
+
+3.  **Upgrade `pip` and install dependencies**  
+    Once activated, run:
+    ```powershell
+    python -m pip install --upgrade pip
+    pip install -r requirements.txt
+    ```
+`
+**Deactivating (All Platforms):**
+
+When you're done working, deactivate the virtual environment by running:
+```bash
+deactivate
+```
+
+> [!NOTE]
+> Make sure to activate the virtual environment every time you work on the project to ensure you're using the correct dependencies.
+
+This setup ensures that your development environment is isolated and consistent with the project's requirements.
+
 ### Creating a new branch
 
 When you want to contribute to the Discord Bot Project, you will need to create a new branch where you will be staging your changes.
@@ -77,6 +127,33 @@ git checkout -b <new_branch_name>
 > ```bash
 > git branch
 > ```
+
+Please test your code! Here are instructions for testing the bot.
+
+### Testing the Bot Locally
+
+Since we currently don't have a hosting solution, you'll need to run the bot locally to test your changes. Here's how to do it:
+
+1. Make sure you have all the required dependencies installed:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. Create a `.env` file in the root directory with your bot token (you can find this on our BitWarden):
+   ```env
+   DISCORD_TOKEN=your_bot_token_here
+   ```
+
+3. Run the bot:
+   ```bash
+   python bot.py
+   ```
+
+The bot will start up and connect to Discord. You can test your changes by interacting with the bot on your Discord server. Make sure to test all the functionality you've modified or added to ensure everything works as expected.
+
+> [!NOTE]
+> Keep our bot token secure and never commit it to the repository. The `.env` file is already in the `.gitignore` to prevent accidental commits.
+
 
 Once you are ready to push your code to the branch that you created, you have to stage the changes.
 
@@ -183,6 +260,49 @@ CodeQL analyzes the codebase for potential security vulnerabilities. It searches
 
 - `dependabot.yml`  
 Dependabot automatically monitors our dependencies and opens pull requests when updates are available. This helps us stay current with library versions and patch known security issues before they become an issue.
+
+### Updating the Discord Notifier
+
+> [!NOTE]
+Only the Project Manager is able to update the contributors within the Discord Notifier, as they will be the only ones with access to this file.
+
+Our project uses discord webhooks & github workflows to enable us with discord notifications directly from Github! We have three files (one being secret) to accomplish this. They are as follows:
+- `discord_notify.yml`    
+GitHub Workflow file that tells Github what events to look for to run the `notify_discord.py` script
+- `notify_discord.py`    
+Python Script that builds the message and sends to the discord webhook based on the type of GitHub Event
+- `user_map.json`[Secret]    
+JSON file that contains the mapping of each contributer's GitHub username to their DiscordID. We actually store this as a base64 string in our GitHub Secrets.
+
+The only file that should ever be updated is the `user_map.json` file, that being when a new member would join the project.
+
+Before we begin, let's decode our user_map.json base64 string by running the following command in your terminal:
+```bash
+echo "STRING-GOES-HERE" | base64 -d
+```
+
+From here you can create a temporary file (I use user_map.json) and copy what was outputted on the terminal into that file. That way, you can now modify the file!
+
+Now you'll have to grab both the contributer's GitHub Username and DiscordID.
+
+To grab the contributer's DiscordID, do the following:
+1. Enable Developer Mode on Discord ([Don't Know how?](https://youtu.be/8FNYLcjBERM))
+2. Right Click on Contributer's Profile 
+3. Click "Copy User ID"
+
+Now that you have the contributer's DiscordID, map their GitHub username to their DiscordID with the JSON's structure:
+```json
+"GitHub_Username": <DiscordID>
+```
+
+Now let's encode that that file by running the following command in your terminal:
+```bash
+cat user_map.json | base64
+```
+
+Take this string and update our USER_MAP GitHub Secret!
+
+And done, you have now succesfully modified and updated our USER_MAP GitHub Secret!
 
 By contributing to this repo, you're also contributing to the standard of quality. So, if the CI/CD workflow fails on your pull request, don't worry; it's just part of the process to help you (and the rest of the team) write better, more secure code.
 
