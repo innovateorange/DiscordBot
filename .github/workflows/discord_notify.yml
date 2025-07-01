@@ -1,0 +1,36 @@
+name: Notify Discord on Assignments or Mentions
+
+on:
+  issues:
+    types: [assigned]
+  pull_request:
+    types: [review_requested]
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+
+      - name: Install dependencies
+        run: pip install requests
+      
+      - name: Decode user_map.json from secret
+        run: |
+          echo "${{ secrets.USER_MAP }}" | base64 --decode > user_map.json
+
+      - name: Run notification script
+        run: python notify_discord.py
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+

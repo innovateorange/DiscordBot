@@ -261,6 +261,49 @@ CodeQL analyzes the codebase for potential security vulnerabilities. It searches
 - `dependabot.yml`  
 Dependabot automatically monitors our dependencies and opens pull requests when updates are available. This helps us stay current with library versions and patch known security issues before they become an issue.
 
+### Updating the Discord Notifier
+
+> [!NOTE]
+Only the Project Manager is able to update the contributors within the Discord Notifier, as they will be the only ones with access to this file.
+
+Our project uses discord webhooks & github workflows to enable us with discord notifications directly from Github! We have three files (one being secret) to accomplish this. They are as follows:
+- `discord_notify.yml`    
+GitHub Workflow file that tells Github what events to look for to run the `notify_discord.py` script
+- `notify_discord.py`    
+Python Script that builds the message and sends to the discord webhook based on the type of GitHub Event
+- `user_map.json`[Secret]    
+JSON file that contains the mapping of each contributer's GitHub username to their DiscordID. We actually store this as a base64 string in our GitHub Secrets.
+
+The only file that should ever be updated is the `user_map.json` file, that being when a new member would join the project.
+
+Before we begin, let's decode our user_map.json base64 string by running the following command in your terminal:
+```bash
+echo "STRING-GOES-HERE" | base64 -d
+```
+
+From here you can create a temporary file (I use user_map.json) and copy what was outputted on the terminal into that file. That way, you can now modify the file!
+
+Now you'll have to grab both the contributer's GitHub Username and DiscordID.
+
+To grab the contributer's DiscordID, do the following:
+1. Enable Developer Mode on Discord ([Don't Know how?](https://youtu.be/8FNYLcjBERM))
+2. Right Click on Contributer's Profile 
+3. Click "Copy User ID"
+
+Now that you have the contributer's DiscordID, map their GitHub username to their DiscordID with the JSON's structure:
+```json
+"GitHub_Username": <DiscordID>
+```
+
+Now let's encode that that file by running the following command in your terminal:
+```bash
+cat user_map.json | base64
+```
+
+Take this string and update our USER_MAP GitHub Secret!
+
+And done, you have now succesfully modified and updated our USER_MAP GitHub Secret!
+
 By contributing to this repo, you're also contributing to the standard of quality. So, if the CI/CD workflow fails on your pull request, don't worry; it's just part of the process to help you (and the rest of the team) write better, more secure code.
 
 > This document will be updated based on the needs of the team

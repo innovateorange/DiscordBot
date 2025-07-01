@@ -4,6 +4,7 @@
 
 import unittest
 from unittest.mock import AsyncMock, MagicMock, patch
+import asyncio
 from bot import bot, run_bot  # Import the bot instance directly
 import discord
 
@@ -16,6 +17,7 @@ class TestCSClubBot(unittest.IsolatedAsyncioTestCase):
         Creates a mock context that simulates Discord's message context"""
         self.ctx = MagicMock()
         self.ctx.send = AsyncMock()  # Mock the send method to test message sending
+        bot.loop = asyncio.get_running_loop()
 
     async def test_help_command(self):
         """Test the !help command
@@ -73,8 +75,10 @@ class TestCSClubBot(unittest.IsolatedAsyncioTestCase):
     @patch("bot.bot.run", side_effect=discord.LoginFailure("invalid_token"))
     @patch("os.getenv", return_value="invalid_token")
     @patch("bot.load_dotenv", return_value=True)
-    @patch("sys.exit")  
-    def test_env_with_invalid_token(self, mock_exit, mock_load_dotenv, mock_getenv, mock_bot_run):
+    @patch("sys.exit")
+    def test_env_with_invalid_token(
+        self, mock_exit, mock_load_dotenv, mock_getenv, mock_bot_run
+    ):
         """Test if .env is found and DISCORD_BOT_TOKEN is invalid"""
         run_bot()
         mock_bot_run.assert_called_once_with("invalid_token")
@@ -90,6 +94,177 @@ class TestCSClubBot(unittest.IsolatedAsyncioTestCase):
         """Test if .env is found and DISCORD_BOT_TOKEN is valid"""
         run_bot()
         mock_bot_run.assert_called_once_with("valid_token")
+
+    async def test_on_member_join_success(self):
+        """Test on_member_join event sends welcome message successfully."""
+        mock_member = MagicMock(spec=discord.Member)
+        mock_member.mention = "<@12345>"
+        mock_member.display_name = "TestUser"
+        mock_member.guild = MagicMock(spec=discord.Guild)
+        mock_member.guild.name = "Test Server"
+        mock_member.guild.system_channel = None
+        mock_member.send = AsyncMock()
+
+        mock_welcome_channel = MagicMock(spec=discord.TextChannel)
+        mock_welcome_channel.name = "welcome"
+        mock_welcome_channel.send = AsyncMock()
+
+        mock_networking_channel = MagicMock(spec=discord.TextChannel)
+        mock_networking_channel.name = "networking"
+        mock_networking_channel.id = "67890"
+
+        mock_member.guild.text_channels = [
+            mock_welcome_channel,
+            mock_networking_channel,
+        ]
+
+        bot.dispatch("member_join", mock_member)
+        await asyncio.sleep(0)
+
+        expected_message = f"Welcome to **Test Server**, {mock_member.mention}! Feel free to introduce yourself in <#{mock_networking_channel.id}>"
+        mock_welcome_channel.send.assert_called_once_with(expected_message)
+        mock_member.send.assert_not_called()
+
+    async def test_on_member_join_no_networking_channel(self):
+        """Test on_member_join when no networking channel is found."""
+        mock_member = MagicMock(spec=discord.Member)
+        mock_member.mention = "<@12345>"
+        mock_member.display_name = "TestUser"
+        mock_member.guild = MagicMock(spec=discord.Guild)
+        mock_member.guild.name = "Test Server"
+
+        mock_welcome_channel = MagicMock(spec=discord.TextChannel)
+        mock_welcome_channel.name = "welcome"
+        mock_welcome_channel.send = AsyncMock()
+
+        mock_member.guild.text_channels = [mock_welcome_channel]
+        mock_member.guild.system_channel = None
+
+        bot.dispatch("member_join", mock_member)
+        await asyncio.sleep(0)
+
+        expected_message = f"Welcome to **Test Server**, {mock_member.mention}! Feel free to introduce yourself in #networking"
+        mock_welcome_channel.send.assert_called_once_with(expected_message)
+
+    async def test_on_member_join_fallback_to_general(self):
+        """Test on_member_join falls back to 'general' channel."""
+        mock_member = MagicMock(spec=discord.Member)
+        mock_member.mention = "<@12345>"
+        mock_member.display_name = "TestUser"
+        mock_member.guild = MagicMock(spec=discord.Guild)
+        mock_member.guild.name = "Test Server"
+
+        mock_general_channel = MagicMock(spec=discord.TextChannel)
+        mock_general_channel.name = "general"
+        mock_general_channel.send = AsyncMock()
+
+        mock_member.guild.text_channels = [mock_general_channel]
+        mock_member.guild.system_channel = None
+
+        bot.dispatch("member_join", mock_member)
+        await asyncio.sleep(0)
+
+        mock_general_channel.send.assert_called_once()
+
+    async def test_on_member_join_fallback_to_system_channel(self):
+        """Test on_member_join falls back to system channel."""
+        mock_member = MagicMock(spec=discord.Member)
+        mock_member.display_name = "TestUser"
+        mock_member.guild = MagicMock(spec=discord.Guild)
+
+        mock_system_channel = MagicMock(spec=discord.TextChannel)
+        mock_system_channel.send = AsyncMock()
+
+        mock_member.guild.text_channels = []
+        mock_member.guild.system_channel = mock_system_channel
+
+        bot.dispatch("member_join", mock_member)
+        await asyncio.sleep(0)
+
+        mock_system_channel.send.assert_called_once()
+
+    async def test_on_member_join_fallback_to_first_channel(self):
+        """Test on_member_join falls back to the first available text channel."""
+        mock_member = MagicMock(spec=discord.Member)
+        mock_member.display_name = "TestUser"
+        mock_member.guild = MagicMock(spec=discord.Guild)
+
+        mock_first_channel = MagicMock(spec=discord.TextChannel)
+        mock_first_channel.name = "random"
+        mock_first_channel.send = AsyncMock()
+
+        mock_member.guild.text_channels = [mock_first_channel]
+        mock_member.guild.system_channel = None
+
+        bot.dispatch("member_join", mock_member)
+        await asyncio.sleep(0)
+
+        mock_first_channel.send.assert_called_once()
+
+    async def test_on_member_join_no_channels_fallback_to_dm(self):
+        """Test on_member_join falls back to DM when no channels are available."""
+        mock_member = MagicMock(spec=discord.Member)
+        mock_member.display_name = "TestUser"
+        mock_member.guild = MagicMock(spec=discord.Guild)
+        mock_member.guild.name = "Test Server"
+        mock_member.send = AsyncMock()
+
+        mock_member.guild.text_channels = []
+        mock_member.guild.system_channel = None
+
+        bot.dispatch("member_join", mock_member)
+        await asyncio.sleep(0)
+
+        mock_member.send.assert_called_once()
+        expected_dm = (
+            f"🎉 Welcome to **{mock_member.guild.name}**!\n\n"
+            f"I'm BugBot! Type `!help` in any channel to see what I can do. 🤖"
+        )
+        mock_member.send.assert_called_with(expected_dm)
+
+    @patch("builtins.print")
+    async def test_on_member_join_forbidden(self, mock_print):
+        """Test on_member_join handles discord.Forbidden exception."""
+        mock_member = MagicMock(spec=discord.Member)
+        mock_member.display_name = "TestUser"
+        mock_member.guild = MagicMock(spec=discord.Guild)
+
+        mock_welcome_channel = MagicMock(spec=discord.TextChannel)
+        mock_welcome_channel.name = "welcome"
+        mock_welcome_channel.send = AsyncMock(
+            side_effect=discord.Forbidden(MagicMock(), "missing permissions")
+        )
+
+        mock_member.guild.text_channels = [mock_welcome_channel]
+        mock_member.guild.system_channel = None
+
+        bot.dispatch("member_join", mock_member)
+        await asyncio.sleep(0)
+
+        mock_print.assert_any_call(
+            f"❌ Could not send welcome message for {mock_member.display_name} - missing permissions"
+        )
+
+    @patch("builtins.print")
+    async def test_on_member_join_exception(self, mock_print):
+        """Test on_member_join handles generic Exception."""
+        mock_member = MagicMock(spec=discord.Member)
+        mock_member.display_name = "TestUser"
+        mock_member.guild = MagicMock(spec=discord.Guild)
+
+        mock_welcome_channel = MagicMock(spec=discord.TextChannel)
+        mock_welcome_channel.name = "welcome"
+        mock_welcome_channel.send = AsyncMock(side_effect=Exception("Test error"))
+
+        mock_member.guild.text_channels = [mock_welcome_channel]
+        mock_member.guild.system_channel = None
+
+        bot.dispatch("member_join", mock_member)
+        await asyncio.sleep(0)
+
+        mock_print.assert_any_call(
+            f"❌ Error sending welcome message for {mock_member.display_name}: Test error"
+        )
 
 
 if __name__ == "__main__":

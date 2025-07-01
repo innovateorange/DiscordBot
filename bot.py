@@ -7,9 +7,10 @@ import sys
 from dotenv import load_dotenv
 
 # Set up Discord Intents to enable bot to receive message events
-intents = discord.Intents.default()
+intents: discord.Intents = discord.Intents.default()
 intents.messages = True
 intents.message_content = True  # Required to read message content (needed for commands)
+intents.members = True  # Privileged intent
 
 # Initialize bot with command prefix '!' and specified intents
 bot = commands.Bot(command_prefix="!", intents=intents, help_command=None)
@@ -22,13 +23,69 @@ async def on_ready():
     print(f"✅ Logged in as {bot.user}")
 
 
+# Welcome message when a new member joins the server (requires privileged intent)
+@bot.event
+async def on_member_join(member: discord.Member) -> None:
+    """Event: Called when a new member joins the server."""
+    # Try to find a welcome channel (common names: welcome, general, etc.)
+    welcome_channel: discord.TextChannel | None = None
+
+    # Look for common welcome channel names
+    for channel in member.guild.text_channels:
+        if channel.name.lower() in ["welcome", "general", "introductions", "lobby"]:
+            welcome_channel = channel
+            break
+
+    # If no specific welcome channel found, use the first available text channel
+    if not welcome_channel:
+        if member.guild.system_channel:
+            welcome_channel = member.guild.system_channel
+        elif member.guild.text_channels:
+            welcome_channel = member.guild.text_channels[0]
+
+    # Find networking channel for clickable link
+    networking_channel: discord.TextChannel | None = None
+    for channel in member.guild.text_channels:
+        if channel.name.lower() == "networking":
+            networking_channel = channel
+            break
+
+    # Create networking channel mention or fallback text
+    networking_mention = (
+        f"<#{networking_channel.id}>" if networking_channel else "#networking"
+    )
+
+    # Create welcome message
+    welcome_message = f"Welcome to **{member.guild.name}**, {member.mention}! Feel free to introduce yourself in {networking_mention}"
+
+    try:
+        if welcome_channel:
+            await welcome_channel.send(welcome_message)
+            print(
+                f"📨 Welcome message sent for {member.display_name} in #{welcome_channel.name}"
+            )
+        else:
+            # Fallback: send a DM if no suitable channel is found
+            await member.send(
+                f"🎉 Welcome to **{member.guild.name}**!\n\n"
+                f"I'm BugBot! Type `!help` in any channel to see what I can do. 🤖"
+            )
+            print(f"📨 Welcome DM sent to {member.display_name}")
+    except discord.Forbidden:
+        # Bot doesn't have permissions to send messages in the channel or to the user
+        print(
+            f"❌ Could not send welcome message for {member.display_name} - missing permissions"
+        )
+    except Exception as e:
+        print(f"❌ Error sending welcome message for {member.display_name}: {e}")
+
+
 # !help command placeholder
 @bot.command()
-async def help(ctx):
+async def help(ctx) -> None:
     """Command: Lists all available bot commands."""
     help_message = (
-        "**🤖 CuseBot Commands:**\n"
-        "`!help` – Show this help message\n"
+        "**🤖 BugBot Commands:**\n"
         "`!resume` – Link to engineering resume resources\n"
         "`!events` – See upcoming club events\n"
         "`!resources` – Get recommended CS learning materials\n"
@@ -38,7 +95,7 @@ async def help(ctx):
 
 # !resume command placeholder
 @bot.command()
-async def resume(ctx):
+async def resume(ctx) -> None:
     """Command: Sends a link to resume resources."""
     await ctx.send(
         "📄 Resume Resources: https://www.reddit.com/r/EngineeringResumes/wiki/index/"
@@ -47,7 +104,7 @@ async def resume(ctx):
 
 # !events command placeholder
 @bot.command()
-async def events(ctx):
+async def events(ctx) -> None:
     """Command: Sends a list of upcoming events."""
     await ctx.send(
         "📅 Upcoming Events:\n"
@@ -59,7 +116,7 @@ async def events(ctx):
 
 # !resources command placeholder
 @bot.command()
-async def resources(ctx):
+async def resources(ctx) -> None:
     """Command: Sends recommended CS learning resources."""
     await ctx.send(
         "📚 CS Learning Resources:\n"
@@ -70,10 +127,10 @@ async def resources(ctx):
     )
 
 
-def run_bot():
+def run_bot() -> None:
     if load_dotenv():
         token = os.getenv("DISCORD_BOT_TOKEN")
-        assert token != "", "DISCORD_BOT_TOKEN can not be empty"
+        assert token, "DISCORD_BOT_TOKEN can not be empty or None"
         try:
             bot.run(token)
         except discord.LoginFailure:
