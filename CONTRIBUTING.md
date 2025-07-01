@@ -79,27 +79,32 @@ Working on Python projects, it's generally a good idea to use virtual environmen
 
 **On Windows:**
 
-1.  **Create the virtual environment**  
+1. **Create the virtual environment**  
     Open Command Prompt or PowerShell, navigate to the project directory, and run:
+
     ```powershell
     python -m venv .virtualenv
     ```
 
-2.  **Activate the virtual environment**
+2. **Activate the virtual environment**
+
     ```powershell
     .\.virtualenv\Scripts\activate
     ```
 
-3.  **Upgrade `pip` and install dependencies**  
+3. **Upgrade `pip` and install dependencies**  
+
     Once activated, run:
+
     ```powershell
     python -m pip install --upgrade pip
     pip install -r requirements.txt
     ```
-`
+
 **Deactivating (All Platforms):**
 
 When you're done working, deactivate the virtual environment by running:
+
 ```bash
 deactivate
 ```
@@ -135,16 +140,19 @@ Please test your code! Here are instructions for testing the bot.
 Since we currently don't have a hosting solution, you'll need to run the bot locally to test your changes. Here's how to do it:
 
 1. Make sure you have all the required dependencies installed:
+
    ```bash
    pip install -r requirements.txt
    ```
 
 2. Create a `.env` file in the root directory with your bot token (you can find this on our BitWarden):
+
    ```env
    DISCORD_TOKEN=your_bot_token_here
    ```
 
 3. Run the bot:
+
    ```bash
    python bot.py
    ```
@@ -153,7 +161,6 @@ The bot will start up and connect to Discord. You can test your changes by inter
 
 > [!NOTE]
 > Keep our bot token secure and never commit it to the repository. The `.env` file is already in the `.gitignore` to prevent accidental commits.
-
 
 Once you are ready to push your code to the branch that you created, you have to stage the changes.
 
@@ -267,16 +274,18 @@ Dependabot automatically monitors our dependencies and opens pull requests when 
 Only the Project Manager is able to update the contributors within the Discord Notifier, as they will be the only ones with access to this file.
 
 Our project uses discord webhooks & github workflows to enable us with discord notifications directly from Github! We have three files (one being secret) to accomplish this. They are as follows:
-- `discord_notify.yml`    
+
+- `discord_notify.yml`
 GitHub Workflow file that tells Github what events to look for to run the `notify_discord.py` script
-- `notify_discord.py`    
+- `notify_discord.py`
 Python Script that builds the message and sends to the discord webhook based on the type of GitHub Event
-- `user_map.json`[Secret]    
+- `user_map.json`[Secret]
 JSON file that contains the mapping of each contributer's GitHub username to their DiscordID. We actually store this as a base64 string in our GitHub Secrets.
 
 The only file that should ever be updated is the `user_map.json` file, that being when a new member would join the project.
 
 Before we begin, let's decode our user_map.json base64 string by running the following command in your terminal:
+
 ```bash
 echo "STRING-GOES-HERE" | base64 -d
 ```
@@ -286,16 +295,19 @@ From here you can create a temporary file (I use user_map.json) and copy what wa
 Now you'll have to grab both the contributer's GitHub Username and DiscordID.
 
 To grab the contributer's DiscordID, do the following:
+
 1. Enable Developer Mode on Discord ([Don't Know how?](https://youtu.be/8FNYLcjBERM))
 2. Right Click on Contributer's Profile 
 3. Click "Copy User ID"
 
 Now that you have the contributer's DiscordID, map their GitHub username to their DiscordID with the JSON's structure:
+
 ```json
 "GitHub_Username": <DiscordID>
 ```
 
 Now let's encode that that file by running the following command in your terminal:
+
 ```bash
 cat user_map.json | base64
 ```
