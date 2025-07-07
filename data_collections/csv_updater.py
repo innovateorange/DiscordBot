@@ -1,4 +1,5 @@
 from .events import getEvents
+from .internships import getInternships
 import os
 import pandas as pd
 import csv
