@@ -209,11 +209,25 @@ Since we currently don't have a hosting solution, you'll need to run the bot loc
    DISCORD_TOKEN=your_bot_token_here
    ```
 
-3. Run the bot:
+3. Ensure that you have installed `dotenvx` since we will be using that to both encrypt and decrypt our `.env` file: 
+
+You can find the instructions on how to install `dotenvx` in the [dotenvx documentation](https://dotenvx.com/docs/install).
+
+4. Run the following command to encrypt your `.env` file:
 
    ```bash
-   python bot.py
+   dotenvx encrypt
    ```
+
+  This will encrypt your `.env` file and create a `.env.keys` file that can be used to decrypt your `.env` file when running the bot.
+
+5. Run the bot:
+
+   ```bash
+   dotenvx run -- python3 bot.py
+   ```
+
+Further information on dotenvx can be found in the [dotenvx documentation](https://dotenvx.com/docs/quickstart).
 
 The bot will start up and connect to Discord. You can test your changes by interacting with the bot on your Discord server. Make sure to test all the functionality you've modified or added to ensure everything works as expected.
 
