@@ -13,20 +13,8 @@ name: "CodeQL Advanced"
 on:
   push:
     branches: ["main", 'stable/*']
-    paths:
-      - '**/*.py'
-      - '**/*.pyi'
-      - 'requirements.txt'
-      - 'setup.py'
-      - 'pyproject.toml'
   pull_request:
     branches: ["main", 'stable/*']
-    paths:
-      - '**/*.py'
-      - '**/*.pyi'
-      - 'requirements.txt'
-      - 'setup.py'
-      - 'pyproject.toml'
   schedule:
     - cron: '15 0 * * 3'
 jobs:

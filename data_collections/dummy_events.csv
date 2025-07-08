@@ -1,6 +1,16 @@
-Type,Title,Description,whenDate,pubDate,Location,link
+Type,Title,Description,whenDate,pubDate,Location,link,entryData
 Event,Hackathon 2025,Annual university-wide hackathon,"Friday, April 25th 2025, 6:00 pm EDT - Sunday, April 27th 2025, 12:00 pm EDT","Tue, 15 Apr 2025 10:00:00 -0400","Link Hall, SU",https://syr.joinhandshake.com/events/1605751/share_preview
 Event,Tech Talk: AI Today,Discussion on current AI trends,"Wednesday, May 7th 2025, 5:00 pm EDT - Wednesday, May 7th 2025, 6:30 pm EDT","Wed, 16 Apr 2025 14:45:00 -0400",Zoom Webinar,https://syr.joinhandshake.com/events/1605752/share_preview
 Event,Startup Mixer,Networking for student entrepreneurs,"Thursday, May 15th 2025, 4:00 pm EDT - Thursday, May 15th 2025, 7:00 pm EDT","Thu, 17 Apr 2025 09:30:00 -0400",The Warehouse,https://syr.joinhandshake.com/events/1605753/share_preview
 Event,Resume Workshop,Resume tips from career counselors,"Monday, April 28th 2025, 2:00 pm EDT - Monday, April 28th 2025, 3:00 pm EDT","Mon, 14 Apr 2025 16:20:00 -0400",Career Center,https://syr.joinhandshake.com/events/1605754/share_preview
 Event,Product Design Jam,Hands-on product challenge with prizes,"Saturday, May 3rd 2025, 10:00 am EDT - Saturday, May 3rd 2025, 4:00 pm EDT","Fri, 11 Apr 2025 13:00:00 -0400","MakerSpace, SU",https://syr.joinhandshake.com/events/1605755/share_preview
+Internship,Acme Corp,Software Engineering Intern,,2025-06-15,"New York,NY",https://acme.example.com/apply,2025-07-01T14:23:45+00:00
+Internship,Globex Inc,Data Analyst Intern,,2025-06-20,"San Francisco,CA",https://globex.example.com/jobs/123,2025-07-01T14:23:45+00:00
+Internship,Initech,Product Management Intern,,2025-06-10,"Austin,TX",https://initech.example.com/careers,2025-07-01T14:23:45+00:00
+Internship,Stark Industries,Cybersecurity Intern,,2025-06-18,"Los Angeles,CA",https://stark.example.com/interns,2025-07-01T14:23:45+00:00
+Internship,Wayne Enterprises,Marketing Intern,,2025-06-25,"Gotham City",https://wayne.example.com/jobs,2025-07-01T14:23:45+00:00
+Job,Acme Corp,Software Engineer,,2025-06-05,"New York, NY",https://acme.com/jobs,2025-07-01T14:23:00+00:00
+Job,Globex Inc,Data Scientist,,2025-05-22,"San Francisco, CA",https://globex.com/careers,2025-07-01T14:23:00+00:00
+Job,Initech,Product Manager,,2025-06-18,"Austin, TX",https://initech.com/jobs,2025-07-01T14:23:00+00:00
+Job,Stark Industries,Cybersecurity Analyst,,2025-04-30,"Los Angeles, CA",https://starkindustries.com/careers,2025-07-01T14:23:00+00:00
+Job,Weyland Corp,Mechanical Engineer,,2025-05-12,"Seattle, WA",https://weylandcorp.com/jobs,2025-07-01T14:23:00+00:00
