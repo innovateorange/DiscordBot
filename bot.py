@@ -406,11 +406,13 @@ async def jobs(ctx, *, args: str = "") -> None:
         await ctx.send(message)
         
         # Log the command usage
-        print(f"📋 Jobs command used by {ctx.author.display_name} with args: '{args}'")
+        sys.stdout.buffer.write(f"📋 Jobs command used by {ctx.author.display_name} with args: '{args}'\n".encode('utf-8'))
+
         
     except Exception as e:
         await ctx.send("❌ Sorry, there was an error searching for jobs. Please try again later.")
-        print(f"❌ Error in jobs command: {e}")
+        sys.stdout.buffer.write(f"❌ Error in jobs command: {e}\n".encode('utf-8'))
+
 
 
 def run_bot() -> None:
