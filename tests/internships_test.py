@@ -1,4 +1,8 @@
-from data_collections.internships import getInternships, _parse_internship_sections, _extract_internship_data
+from data_collections.internships import (
+    getInternships,
+    _parse_internship_sections,
+    _extract_internship_data,
+)
 from unittest.mock import MagicMock, patch
 import unittest
 
@@ -27,10 +31,10 @@ Apply: https://careers.microsoft.com/intern
         mock_get.return_value = mock_response
 
         result = getInternships("https://example.com/internships.md")
-        
+
         self.assertIsInstance(result, list)
         self.assertGreater(len(result), 0)
-        
+
         # Check first internship
         first_internship = result[0]
         self.assertEqual(first_internship["Type"], "Internship")
@@ -46,10 +50,10 @@ Apply: https://careers.microsoft.com/intern
     def test_network_error(self, mock_get):
         """Test handling of network errors"""
         mock_get.side_effect = Exception("Network error")
-        
+
         with self.assertRaises(RuntimeError) as context:
             getInternships("https://example.com/internships.md")
-        
+
         self.assertIn("Failed to fetch the markdown file", str(context.exception))
 
     @patch("requests.get")
@@ -59,10 +63,10 @@ Apply: https://careers.microsoft.com/intern
         mock_response.text = ""
         mock_response.raise_for_status.return_value = None
         mock_get.return_value = mock_response
-        
+
         with self.assertRaises(RuntimeError) as context:
             getInternships("https://example.com/internships.md")
-        
+
         self.assertIn("Empty markdown file", str(context.exception))
 
     @patch("requests.get")
@@ -72,7 +76,7 @@ Apply: https://careers.microsoft.com/intern
         mock_response.text = "This is just some random text without internship data."
         mock_response.raise_for_status.return_value = None
         mock_get.return_value = mock_response
-        
+
         result = getInternships("https://example.com/internships.md")
         self.assertEqual(result, [])
 
@@ -82,10 +86,10 @@ Apply: https://careers.microsoft.com/intern
         mock_response = MagicMock()
         mock_response.raise_for_status.side_effect = Exception("404 Not Found")
         mock_get.return_value = mock_response
-        
+
         with self.assertRaises(RuntimeError) as context:
             getInternships("https://example.com/internships.md")
-        
+
         self.assertIn("Failed to fetch the markdown file", str(context.exception))
 
 
@@ -104,7 +108,7 @@ This is another longer section with substantial content that meets the minimum l
 ### Company C
 This section also has enough content to be considered valid for internship data extraction and processing.
         """
-        
+
         sections = _parse_internship_sections(content)
         self.assertGreater(len(sections), 0)
         self.assertTrue(all(len(section) > 50 for section in sections))
@@ -118,7 +122,7 @@ Company B content here with comprehensive details about their internship program
 ***
 Company C content here with extensive information about their summer internship opportunities and detailed program descriptions.
         """
-        
+
         sections = _parse_internship_sections(content)
         self.assertGreater(len(sections), 0)
 
@@ -131,7 +135,7 @@ Hi
 # Long enough
 This is a much longer section that should be included in the results because it has enough content to be meaningful.
         """
-        
+
         sections = _parse_internship_sections(content)
         # Should only include the longer section
         self.assertEqual(len(sections), 1)
@@ -144,7 +148,7 @@ class TestExtractInternshipData(unittest.TestCase):
         """Test extraction of company names"""
         section = "Company: Google\nRole: Software Engineer"
         result = _extract_internship_data(section)
-        
+
         self.assertIsNotNone(result)
         self.assertEqual(result["Title"], "Google")
         self.assertEqual(result["Type"], "Internship")
@@ -153,7 +157,7 @@ class TestExtractInternshipData(unittest.TestCase):
         """Test extraction of role/position"""
         section = "Company: Microsoft\nRole: Data Scientist"
         result = _extract_internship_data(section)
-        
+
         self.assertIsNotNone(result)
         self.assertEqual(result["Description"], "Data Scientist")
 
@@ -161,7 +165,7 @@ class TestExtractInternshipData(unittest.TestCase):
         """Test extraction of posted date"""
         section = "Posted: 2024-01-15\nCompany: Apple"
         result = _extract_internship_data(section)
-        
+
         self.assertIsNotNone(result)
         self.assertEqual(result["pubDate"], "2024-01-15")
 
@@ -169,7 +173,7 @@ class TestExtractInternshipData(unittest.TestCase):
         """Test extraction of location"""
         section = "Location: San Francisco, CA\nCompany: Twitter"
         result = _extract_internship_data(section)
-        
+
         self.assertIsNotNone(result)
         self.assertEqual(result["Location"], "San Francisco, CA")
 
@@ -177,7 +181,7 @@ class TestExtractInternshipData(unittest.TestCase):
         """Test extraction of application links"""
         section = "Apply: https://example.com/apply\nCompany: Test"
         result = _extract_internship_data(section)
-        
+
         self.assertIsNotNone(result)
         self.assertEqual(result["link"], "https://example.com/apply")
 
@@ -185,7 +189,7 @@ class TestExtractInternshipData(unittest.TestCase):
         """Test extraction of markdown format links"""
         section = "[Apply Here](https://example.com/apply)\nCompany: Test"
         result = _extract_internship_data(section)
-        
+
         self.assertIsNotNone(result)
         self.assertEqual(result["link"], "https://example.com/apply")
 
@@ -193,14 +197,14 @@ class TestExtractInternshipData(unittest.TestCase):
         """Test when no valid internship data is found"""
         section = "This is just some random text without any internship information."
         result = _extract_internship_data(section)
-        
+
         self.assertIsNone(result)
 
     def test_when_date_blank(self):
         """Test that whenDate is always blank as per requirements"""
         section = "Company: Test\nRole: Intern"
         result = _extract_internship_data(section)
-        
+
         self.assertIsNotNone(result)
         self.assertEqual(result["whenDate"], "")
 
@@ -213,9 +217,9 @@ Posted: 2024-02-01
 Location: Seattle, WA
 Apply: https://amazon.com/careers/intern
         """
-        
+
         result = _extract_internship_data(section)
-        
+
         self.assertIsNotNone(result)
         self.assertEqual(result["Type"], "Internship")
         self.assertEqual(result["Title"], "Amazon")
@@ -227,4 +231,4 @@ Apply: https://amazon.com/careers/intern
 
 
 if __name__ == "__main__":
-    unittest.main() 
+    unittest.main()
