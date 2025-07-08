@@ -1,0 +1,15 @@
+# python
+name: build
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+    - run: curl -sfS https://dotenvx.sh/install.sh | sh
+    - run: dotenvx run -- python build.py
+      env:
+        DOTENV_PRIVATE_KEY_CI: ${{ secrets.DOTENV_PRIVATE_KEY_CI }}
