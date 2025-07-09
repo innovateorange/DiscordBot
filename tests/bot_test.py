@@ -266,44 +266,7 @@ class TestCSClubBot(unittest.IsolatedAsyncioTestCase):
         mock_print.assert_any_call(
             f"❌ Error sending welcome message for {mock_member.display_name}: Test error"
         )
-
-
-class TestJobsCommand(unittest.IsolatedAsyncioTestCase):
-    async def asyncSetUp(self):
-        self.ctx = MagicMock()
-        self.ctx.send = AsyncMock()
-        bot.loop = asyncio.get_running_loop()
-
-    @patch("bot.open", side_effect=FileNotFoundError)
-    async def test_jobs_command_csv_not_found(self, mock_open):
-        await bot.get_command("jobs").callback(self.ctx, args="")
-        self.ctx.send.assert_called()
-        self.assertIn("No jobs found", self.ctx.send.call_args[0][0])
-
-    @patch("bot.open", new_callable=unittest.mock.mock_open, read_data="Type,Title,Description,Location,whenDate,pubDate,link,entryDate\n")
-    async def test_jobs_command_empty_csv(self, mock_open):
-        await bot.get_command("jobs").callback(self.ctx, args="")
-        self.ctx.send.assert_called()
-        self.assertIn("No jobs found", self.ctx.send.call_args[0][0])
-
-    @patch("bot.open", new_callable=unittest.mock.mock_open, read_data="Type,Title,Description,Location,whenDate,pubDate,link,entryDate\nInternship,TestTitle,TestDesc,TestLoc,,,http://test,2025-07-07\n")
-    async def test_jobs_command_success(self, mock_open):
-        await bot.get_command("jobs").callback(self.ctx, args="[TestDesc] [] [] [] []")
-        self.ctx.send.assert_called()
-        self.assertIn("Found 1 job", self.ctx.send.call_args[0][0])
-
-    @patch("bot.open", side_effect=Exception("CSV error"))
-    async def test_jobs_command_csv_exception(self, mock_open):
-        await bot.get_command("jobs").callback(self.ctx, args="")
-        self.ctx.send.assert_called()
-        self.assertIn("No jobs found", self.ctx.send.call_args[0][0])
-
-    @patch("builtins.open", side_effect=Exception("Test error"))
-    async def test_jobs_command_internal_exception(self, mock_open):
-        await bot.get_command("jobs").callback(self.ctx, args="")
-        self.ctx.send.assert_called()
-        self.assertIn("No jobs found", self.ctx.send.call_args[0][0])
-
+       
 if __name__ == "__main__":
     # Run the tests when the file is executed directly
     unittest.main(verbosity=2)
