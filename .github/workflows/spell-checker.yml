@@ -21,7 +21,7 @@ jobs:
 
       - name: Install Vale
         run: |
-          curl -fsSL https://github.com/errata-ai/vale/releases/latest/download/vale_Linux_64-bit.tar.gz | tar -xz -C /usr/local/bin vale
+          snap install vale | tar -xz -C /usr/local/bin vale
 
       - name: Run Vale (Grammar Check)
         run: |
