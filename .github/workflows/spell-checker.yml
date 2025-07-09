@@ -1,4 +1,4 @@
-name: Spell Checker
+name: Spell and Grammar Checker
 on:
   workflow_dispatch:
   push:
@@ -12,9 +12,17 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        
       - name: Check Spelling
         uses: check-spelling/check-spelling@v0.0.24
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
-        
+
+      - name: Install Vale
+        run: |
+          curl -fsSL https://github.com/errata-ai/vale/releases/latest/download/vale_Linux_64-bit.tar.gz | tar -xz -C /usr/local/bin vale
+
+      - name: Run Vale (Grammar Check)
+        run: |
+          /usr/local/bin/vale . || true  # '|| true' to prevent workflow failure on errors
