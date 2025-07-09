@@ -5,7 +5,7 @@ from discord.ext import commands
 import os
 import sys
 from dotenv import load_dotenv
-from data_processing.job_event import (getJobs, print_jobs_command, filter_jobs, format_jobs_message)
+from data_processing.job_event import (getJobs, paste_jobs_command, format_jobs_message)
 
 # Set up Discord Intents to enable bot to receive message events
 intents: discord.Intents = discord.Intents.default()
@@ -147,30 +147,31 @@ async def resources(ctx) -> None:
 async def jobs(ctx, *, args: str = "") -> None:
     """
     Searches for jobs and internships based on specified criteria.
-    Usage: !jobs [role] [type] [season] [company] [location]
-    Leave brackets empty [] to ignore that filter.
+    
+    Usage: !jobs [search_term] [flags]
     
     Examples:
-    - !jobs [Software Developer] [internship] [Summer 2025] [] []
-    - !jobs [] [internship] [] [Google] []
-    - !jobs [] [] [] [] [New York]
+    - !jobs software engineer
+    - !jobs -c google -l remote
+    - !jobs python -t internship -s summer
+    - !jobs -c microsoft internship
+    
+    Available Flags:
+    -r, --role    Filter by role/position
+    -t, --type    Filter by job type (internship, full-time, etc.)
+    -s, --season  Filter by season (summer, fall, winter, spring)
+    -c, --company Filter by company name
+    -l, --location Filter by location
     """
-        
-    # START OF THIS BLOCK
-    # This is a temporary solution until internships.py is properly set up.        
+    
     # Path to your CSV file
     csv_file_path = "data_collections/runningCSV.csv"
     try:
-        # Get jobs from CSV
-        job_results = getJobs(csv_file_path)
+        # Use the enhanced getJobs function that handles filtering internally
+        filtered_jobs = getJobs(csv_file_path, args)
         
-        # Parse filters for message formatting
-        filters = print_jobs_command(args) if args.strip() else {}
-
-        if any(filters.values()):
-            filtered_jobs = filter_jobs(job_results, filters)
-        else:
-            filtered_jobs = job_results
+        # Print filters for message formatting
+        filters = paste_jobs_command(args) if args.strip() else {}
                 
         # Format and send the message with filtered jobs
         message = format_jobs_message(filtered_jobs, filters)
@@ -182,7 +183,6 @@ async def jobs(ctx, *, args: str = "") -> None:
     except Exception as e:
         await ctx.send("❌ Sorry, there was an error searching for jobs. Please try again later.")
         sys.stdout.buffer.write(f"❌ Error in jobs command: {e}\n".encode('utf-8'))
-    # END OF THIS BLOCK
 
 
 def run_bot() -> None:
