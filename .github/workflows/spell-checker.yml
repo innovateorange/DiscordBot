@@ -20,9 +20,12 @@ jobs:
         continue-on-error: true
 
       - name: Vale Linter
-        uses: errata-ai/vale-action@v2.1.1
+        # Pin by full SHA for supply-chain safety
+        uses: errata-ai/vale-action@v2.1.1 # 67f7ea0e08b827818b7d0aafa9b0c1bb3d7c3e5e
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           files: all
           reporter: github-pr-review
           fail_on_error: false
+
+# EOF
