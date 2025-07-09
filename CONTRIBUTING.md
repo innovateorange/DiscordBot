@@ -157,9 +157,9 @@ Name                            Stmts   Miss  Cover
 ---------------------------------------------------
 bot.py                             38      2    95%
 data_collections/__init__.py        0      0   100%
-data_collections/getEvents.py      30      4    87%
+data_collections/events.py         30      4    87%
 tests/bot_test.py                  50      1    98%
-tests/getEvents_test.py            54      0   100%
+tests/events_test.py               54      0   100%
 tests/notify_discord_test.py      110      3    97%
 ---------------------------------------------------
 TOTAL                             282     10    96%
@@ -167,6 +167,9 @@ Wrote XML report to coverage.xml
 Wrote HTML report to htmlcov/index.html
 
 ```
+> **WARNING**
+> Ensure that every test file follows the `<module>_test.py` pattern, where `<module>` is the file under test.
+> For example, tests for `events.py` belong in `events_test.py`. The test-discovery mechanism recognises only files that match this pattern.
 
 > [!NOTE]
 > We used nox to run our tests so if you want to understand what nox is doing, you can check out the [`noxfile.py`](https://github.com/innovateorange/DiscordBot/blob/1ca27875bd65239f4a7a8d9da645363908a99c2e/noxfile.py) in the root directory of the project. It contains all the commands that nox will run when you execute it.

@@ -200,7 +200,7 @@ def run_bot() -> None:
             print("Invalid token provided. Please check your .env file.")
             sys.exit(1)
     else:
-        print("environment file does not found")
+        print("environment file was not found")
         sys.exit(1)
 
 
