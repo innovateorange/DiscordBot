@@ -23,9 +23,9 @@ jobs:
         run: |
           VALE_VERSION="2.29.4"  
           curl -fsSL "https://github.com/errata-ai/vale/releases/download/v${VALE_VERSION}/vale_${VALE_VERSION}_Linux_64-bit.tar.gz" \  
-          | tar -xz -C /tmp  
+            | tar --strip-components=1 -xz -C /tmp
           sudo install -m 0755 /tmp/vale /usr/local/bin/vale
 
       - name: Run Vale (Grammar Check)
-        run: |
-          /usr/local/bin/vale . || true  # '|| true' to prevent workflow failure on errors
+        run: /usr/local/bin/vale .
+        continue-on-error: true
