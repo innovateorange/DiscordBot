@@ -21,3 +21,8 @@ jobs:
 
       - name: Vale Linter
         uses: errata-ai/vale-action@v2.1.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          files: all
+          reporter: github-pr-check
+          fail_on_error: true
