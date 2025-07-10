@@ -7,7 +7,6 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import asyncio
 from bot import bot, run_bot  # Import the bot instance directly
 import discord
-import builtins
 
 
 class TestCSClubBot(unittest.IsolatedAsyncioTestCase):
@@ -266,7 +265,8 @@ class TestCSClubBot(unittest.IsolatedAsyncioTestCase):
         mock_print.assert_any_call(
             f"❌ Error sending welcome message for {mock_member.display_name}: Test error"
         )
-       
+
+
 if __name__ == "__main__":
     # Run the tests when the file is executed directly
     unittest.main(verbosity=2)
