@@ -13,7 +13,7 @@ from data_processing.job_event import (
     getJobs
 )
 
-
+# need to create a loophole for emojis on windows :/
 class TestJobEventFunctions(unittest.TestCase):
     """Test class for job_event.py functions"""
 
