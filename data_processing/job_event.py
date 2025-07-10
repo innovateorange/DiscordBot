@@ -1,8 +1,12 @@
 import re
 from typing import List, Dict, Any
+import sys
 
 # from internships import getInternships
 from data_collections.csv_updater import extract_entries_from_csv, remove_duplicates
+
+if sys.stdout.encoding != "utf-8":
+    sys.stdout.reconfigure(encoding="utf-8")
 
 
 def paste_jobs_command(command_args: str) -> Dict[str, Any]:
@@ -96,9 +100,7 @@ def paste_jobs_command(command_args: str) -> Dict[str, Any]:
     return pasted_params
 
 
-def filter_jobs(
-    jobs: List[Dict[str, Any]], filters: Dict[str, Any]
-) -> List[Dict[str, Any]]:
+def filter_jobs(jobs: List[Dict[str, Any]], filters: Dict[str, Any]) -> List[Dict[str, Any]]:
     """
     Filters jobs based on provided criteria including general search and specific flags.
 
@@ -142,7 +144,6 @@ def filter_jobs(
                 filters["role"].lower() in job.get("Title", "").lower()
                 or filters["role"].lower() in job.get("Description", "").lower()
                 or filters["role"].lower() in job.get("Type", "").lower()
-                or filters["role"].lower() in job.get("Company", "").lower()
                 or filters["role"].lower() in job.get("Location", "").lower()
             )
             if not role_match:
@@ -172,9 +173,9 @@ def filter_jobs(
         # Company filter
         if filters.get("company") and include_job:
             company_match = (
-                filters["company"].lower() in job.get("Company", "").lower()
-                or filters["company"].lower() in job.get("Title", "").lower()
+                filters["company"].lower() in job.get("Title", "").lower()
                 or filters["company"].lower() in job.get("Description", "").lower()
+                or filters["company"].lower() in job.get("entryData", "").lower()
             )
             if not company_match:
                 include_job = False
@@ -193,9 +194,7 @@ def filter_jobs(
     return filtered_jobs
 
 
-def format_jobs_message(
-    jobs: List[Dict[str, Any]], filters: Dict[str, Any] = None
-) -> str:
+def format_jobs_message(jobs: List[Dict[str, Any]], filters: Dict[str, Any] = None) -> str:
     """
     Formats job results into a Discord message.
 
@@ -227,15 +226,15 @@ def format_jobs_message(
     display_jobs = jobs[:10]
 
     for job in display_jobs:
-        title = job.get("Title", "Untitled Position")
-        company = job.get("Company", "Unknown Company")
+        companyName = job.get("Title", "Untitled Position")
+        title = job.get("Description", "")
         location = job.get("Location", "")
         when_date = job.get("whenDate", "")
         pub_date = job.get("pubDate", "")
         link = job.get("link", "")
 
         job_text = f"**{title}**\n"
-        job_text += f"🏢 {company}\n"
+        job_text += f"🏢 {companyName}\n"
 
         if location:
             job_text += f"📍 {location}\n"
@@ -244,7 +243,6 @@ def format_jobs_message(
             job_text += f"📅 {when_date}\n"
         if pub_date:
             job_text += f"📅 Posted: {pub_date}\n"
-
         if link:
             job_text += f"🔗 [Apply Here]({link})\n"
 
@@ -274,10 +272,21 @@ def getJobs(csv_file_path: str, command_args: str = "") -> List[Dict[str, Any]]:
         filtered_jobs = []
         for job in jobs:
             job_type = job.get("Type", "").lower()
-            # If no Type field or Type field contains job-related terms
-            if not job_type or any(term in job_type for term in ["Job", "Internship", "Full-time", "Part-time", "Co-op", "Coop", "Intern"]):
+            title = job.get("Title", "").lower()
+            description = job.get("Description", "").lower()
+            job_keywords = [
+                "job", "internship", "intern", "full-time", "part-time", 
+                "co-op", "coop"
+            ]
+            is_job_related = any(
+                keyword in job_type or 
+                keyword in title or 
+                keyword in description
+                for keyword in job_keywords
+            )
+            if is_job_related:
                 filtered_jobs.append(job)
-        
+
         jobs = filtered_jobs
 
         # Apply filters if command_args provided
