@@ -7,7 +7,7 @@ import io
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 if sys.stdout.encoding != "utf-8":
-    sys.stdout - io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 
 from data_processing.job_event import (
     paste_jobs_command,
@@ -25,8 +25,9 @@ class TestJobEventFunctions(unittest.TestCase):
         self.sample_jobs = [
             {
                 "Type": "Internship",
-                "Title": "Cheesy Dreams Inc",
-                "Description": "Pizza Quality Assurance Intern",
+                "Company": "Cheesy Dreams Inc",
+                "Title": "Pizza Quality Assurance Intern",
+                "Description": "Cheeese",
                 "Location": "Napoli, Italy",
                 "whenDate": "Summer 2025",
                 "pubDate": "2025-07-01",
@@ -35,8 +36,9 @@ class TestJobEventFunctions(unittest.TestCase):
             },
             {
                 "Type": "Full-time",
-                "Title": "Whiskers & Co",
-                "Description": "Senior Cat Behavior Analyst",
+                "Company": "Whiskers & Co",
+                "Title": "Senior Cat Behavior Analyst",
+                "Description": "Meow",
                 "Location": "Remote",
                 "whenDate": "",
                 "pubDate": "2025-06-28",
@@ -45,8 +47,9 @@ class TestJobEventFunctions(unittest.TestCase):
             },
             {
                 "Type": "Part-time",
-                "Title": "Pop Culture Studios",
-                "Description": "Professional Bubble Wrap Popper",
+                "Company": "Pop Culture Studios",
+                "Title": "Professional Bubble Wrap Popper",
+                "Description": "Wrangle those bubbles!",
                 "Location": "San Francisco, CA",
                 "whenDate": "Fall 2025",
                 "pubDate": "2025-07-05",
@@ -55,8 +58,9 @@ class TestJobEventFunctions(unittest.TestCase):
             },
             {
                 "Type": "Co-op",
-                "Title": "Mythical Creatures Ltd",
-                "Description": "Unicorn Grooming Specialist",
+                "Company": "Mythical Creatures Ltd",
+                "Title": "Unicorn Grooming Specialist",
+                "Description": "Needed for spring grooming season",
                 "Location": "Portland, OR",
                 "whenDate": "Spring 2025",
                 "pubDate": "2025-07-02",
@@ -65,8 +69,9 @@ class TestJobEventFunctions(unittest.TestCase):
             },
             {
                 "Type": "Internship",
-                "Title": "Sky High Analytics",
-                "Description": "Cloud Whisperer Intern",
+                "Company": "Sky High Analytics",
+                "Title": "Cloud Whisperer Intern",
+                "Description": "whooosh",
                 "Location": "Denver, CO",
                 "whenDate": "Summer 2025",
                 "pubDate": "2025-07-03",
@@ -211,21 +216,21 @@ class TestJobEventFunctions(unittest.TestCase):
         filters = {"general_search": "pizza"}
         result = filter_jobs(self.sample_jobs, filters)
         self.assertEqual(len(result), 1)
-        self.assertEqual(result[0]["Description"], "Pizza Quality Assurance Intern")
+        self.assertEqual(result[0]["Title"], "Pizza Quality Assurance Intern")
 
     def test_filter_jobs_role_filter(self):
         """role"""
         filters = {"role": "analyst"}
         result = filter_jobs(self.sample_jobs, filters)
         self.assertEqual(len(result), 1)
-        self.assertEqual(result[0]["Description"], "Senior Cat Behavior Analyst")
+        self.assertEqual(result[0]["Title"], "Senior Cat Behavior Analyst")
 
     def test_filter_jobs_type_filter(self):
         """type"""
         filters = {"type": "internship"}
         result = filter_jobs(self.sample_jobs, filters)
         self.assertEqual(len(result), 2)
-        titles = [job["Description"] for job in result]
+        titles = [job["Title"] for job in result]
         self.assertIn("Pizza Quality Assurance Intern", titles)
         self.assertIn("Cloud Whisperer Intern", titles)
 
@@ -234,7 +239,7 @@ class TestJobEventFunctions(unittest.TestCase):
         filters = {"season": "summer"}
         result = filter_jobs(self.sample_jobs, filters)
         self.assertEqual(len(result), 2)
-        titles = [job["Description"] for job in result]
+        titles = [job["Title"] for job in result]
         self.assertIn("Pizza Quality Assurance Intern", titles)
         self.assertIn("Cloud Whisperer Intern", titles)
 
@@ -243,7 +248,7 @@ class TestJobEventFunctions(unittest.TestCase):
         filters = {"company": "whiskers"}
         result = filter_jobs(self.sample_jobs, filters)
         self.assertEqual(len(result), 1)
-        self.assertEqual(result[0]["Title"], "Whiskers & Co")
+        self.assertEqual(result[0]["Company"], "Whiskers & Co")
 
     def test_filter_jobs_location_filter(self):
         """location"""
@@ -265,7 +270,7 @@ class TestJobEventFunctions(unittest.TestCase):
         filters = {"role": "specialist", "location": "portland"}
         result = filter_jobs(self.sample_jobs, filters)
         self.assertEqual(len(result), 1)
-        self.assertEqual(result[0]["Description"], "Unicorn Grooming Specialist")
+        self.assertEqual(result[0]["Title"], "Unicorn Grooming Specialist")
 
     def test_format_jobs_message_empty_list(self):
         """empty job list"""
@@ -279,8 +284,10 @@ class TestJobEventFunctions(unittest.TestCase):
 
         self.assertIn("💼 **Found 1 job(s):**", result)
         self.assertIn("Pizza Quality Assurance Intern", result)
+        self.assertIn("Internship", result)
         self.assertIn("Cheesy Dreams Inc", result)
         self.assertIn("Napoli, Italy", result)
+        self.assertIn("Cheeese", result)
         self.assertIn("Summer 2025", result)
         self.assertIn("http://cheesydreams.com/apply", result)
 
@@ -327,8 +334,9 @@ class TestGetJobs(unittest.TestCase):
         self.sample_jobs = [
             {
                 "Type": "Internship",
-                "Title": "Cheesy Dreams Inc",
-                "Description": "Pizza Quality Assurance Intern",
+                "Company": "Cheesy Dreams Inc",
+                "Title": "Pizza Quality Assurance Intern",
+                "Description": "Cheeese",
                 "Location": "Napoli, Italy",
                 "whenDate": "Summer 2025",
                 "pubDate": "2025-07-01",
@@ -337,8 +345,9 @@ class TestGetJobs(unittest.TestCase):
             },
             {
                 "Type": "Full-time",
-                "Title": "Whiskers & Co",
-                "Description": "Senior Cat Behavior Analyst",
+                "Company": "Whiskers & Co",
+                "Title": "Senior Cat Behavior Analyst",
+                "Description": "Meow",
                 "Location": "Remote",
                 "whenDate": "",
                 "pubDate": "2025-06-28",
@@ -347,8 +356,9 @@ class TestGetJobs(unittest.TestCase):
             },
             {
                 "Type": "Part-time",
-                "Title": "Pop Culture Studios",
-                "Description": "Professional Bubble Wrap Popper",
+                "Company": "Pop Culture Studios",
+                "Title": "Professional Bubble Wrap Popper",
+                "Description": "Wrangle those bubbles!",
                 "Location": "San Francisco, CA",
                 "whenDate": "Fall 2025",
                 "pubDate": "2025-07-05",
@@ -357,8 +367,9 @@ class TestGetJobs(unittest.TestCase):
             },
             {
                 "Type": "Event",
-                "Title": "Fun Corp",
-                "Description": "Company Picnic",
+                "Company": "Fun Corp",
+                "Title": "Company Picnic",
+                "Description": "Mangez de la nourriture délicieuse et amusez-vous !",
                 "Location": "Park",
                 "whenDate": "2025-08-01",
                 "pubDate": "2025-07-01",

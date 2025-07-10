@@ -123,6 +123,7 @@ def filter_jobs(jobs: List[Dict[str, Any]], filters: Dict[str, Any]) -> List[Dic
             general_search = filters["general_search"].lower()
             searchable_fields = [
                 job.get("Title", ""),
+                job.get("Company", ""),
                 job.get("Description", ""),
                 job.get("Type", ""),
                 job.get("Company", ""),
@@ -166,6 +167,7 @@ def filter_jobs(jobs: List[Dict[str, Any]], filters: Dict[str, Any]) -> List[Dic
                 or filters["season"].lower() in job.get("Description", "").lower()
                 or filters["season"].lower() in job.get("whenDate", "").lower()
                 or filters["season"].lower() in job.get("pubDate", "").lower()
+                or filters["season"].lower() in job.get("Description", "").lower()
             )
             if not season_match:
                 include_job = False
@@ -174,8 +176,10 @@ def filter_jobs(jobs: List[Dict[str, Any]], filters: Dict[str, Any]) -> List[Dic
         if filters.get("company") and include_job:
             company_match = (
                 filters["company"].lower() in job.get("Title", "").lower()
+                or filters["company"].lower() in job.get("Company", "").lower()
                 or filters["company"].lower() in job.get("Description", "").lower()
-                or filters["company"].lower() in job.get("entryData", "").lower()
+                or filters["company"].lower() in job.get("entryDate", "").lower()
+                or filters["company"].lower() in job.get("Description", "").lower()
             )
             if not company_match:
                 include_job = False
@@ -226,23 +230,29 @@ def format_jobs_message(jobs: List[Dict[str, Any]], filters: Dict[str, Any] = No
     display_jobs = jobs[:10]
 
     for job in display_jobs:
-        companyName = job.get("Title", "Untitled Position")
-        title = job.get("Description", "")
+        title = job.get("Title", "Untitled Position")
+        type = job.get("Type", "")
+        companyName = job.get("Company", "")
         location = job.get("Location", "")
+        description = job.get("Description", "")
         when_date = job.get("whenDate", "")
         pub_date = job.get("pubDate", "")
         link = job.get("link", "")
 
         job_text = f"**{title}**\n"
+
+        job_text += f"📝 {type}\n"
+
         job_text += f"🏢 {companyName}\n"
 
         if location:
             job_text += f"📍 {location}\n"
-
         if when_date:
             job_text += f"📅 {when_date}\n"
         if pub_date:
             job_text += f"📅 Posted: {pub_date}\n"
+        if description:
+            job_text += f"📝 {description}\n"
         if link:
             job_text += f"🔗 [Apply Here]({link})\n"
 
