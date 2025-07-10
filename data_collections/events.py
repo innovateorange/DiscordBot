@@ -63,6 +63,7 @@ def getEvents(url):
 
         event = {
             "Type": "Event",
+            "Company": "",
             "Title": title,
             "Description": descrip,
             "whenDate": when,

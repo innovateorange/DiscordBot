@@ -109,6 +109,30 @@ deactivate
 
 This setup ensures that your development environment is isolated and consistent with the project's requirements.
 
+### Branch Naming Conventions
+
+Before creating a new branch, please review this section to follow the repository's branch-naming conventions.
+
+Consistent branch naming provides clarity and makes it easier to locate specific branches related to ongoing work.
+
+> [!NOTE]
+> All documentation for this section was adapted from [Medium](https://medium.com/@abhay.pixolo/naming-conventions-for-git-branches-a-cheatsheet-8549feca2534)
+
+**Basic Rules**:    
+1. **Lowercase and Hyphen-separated**: Stick to lowercase for branch names and use hyphens to separate words—for example, `feature/new-login` or `bugfix/header-styling`.
+2. **Alphanumeric Characters**: Use only alphanumeric characters (a-z, A-Z, 0–9) and hyphens. Avoid punctuation, spaces, underscores, or any non-alphanumeric character.
+3. **No Continuous Hyphens**: Do not use continuous hyphens. `feature--new-login` can be confusing and hard to read.
+4. **No Trailing Hyphens**: Do not end your branch name with a hyphen. For example, `feature-new-login-` is not a good practice.
+5. **Descriptive**: The name should be descriptive and concise, ideally reflecting the work done on the branch.
+
+**Branch Prefixes**:
+Using branch names helps to quickly identify the purpose of the branches. Here are some common types of branches with their corresponding prefixes:
+1. **Feature Branches**: Used for developing new features. Use the prefix `feature/` (e.g., `feature/login-system`).
+2. **Bugfix Branches**: Used to fix bugs in the code. Use the prefix `bugfix/` (e.g., `bugfix/header-styling`).
+3. **Hotfix Branches**: Created directly from the production branch to fix critical bugs. Use the prefix `hotfix/` (e.g., `hotfix/critical-security-issue`).
+4. **Release Branches**: Used to prepare for a new production release. Use the prefix `release/` (e.g., `release/v1.0.1`).
+5. **Documentation Branches**: Used to write, update, or fix documentation (e.g., the `README.md`). Use the prefix `docs/` (e.g., `docs/api-endpoints`).
+
 ### Creating a new branch
 
 When you want to contribute to the Discord Bot Project, you will need to create a new branch where you will be staging your changes.
@@ -157,9 +181,9 @@ Name                            Stmts   Miss  Cover
 ---------------------------------------------------
 bot.py                             38      2    95%
 data_collections/__init__.py        0      0   100%
-data_collections/getEvents.py      30      4    87%
+data_collections/events.py         30      4    87%
 tests/bot_test.py                  50      1    98%
-tests/getEvents_test.py            54      0   100%
+tests/events_test.py               54      0   100%
 tests/notify_discord_test.py      110      3    97%
 ---------------------------------------------------
 TOTAL                             282     10    96%
@@ -167,6 +191,9 @@ Wrote XML report to coverage.xml
 Wrote HTML report to htmlcov/index.html
 
 ```
+> **WARNING**
+> Ensure that every test file follows the `<module>_test.py` pattern, where `<module>` is the file under test.
+> For example, tests for `events.py` belong in `events_test.py`. The test-discovery mechanism recognises only files that match this pattern.
 
 > [!NOTE]
 > We used nox to run our tests so if you want to understand what nox is doing, you can check out the [`noxfile.py`](https://github.com/innovateorange/DiscordBot/blob/1ca27875bd65239f4a7a8d9da645363908a99c2e/noxfile.py) in the root directory of the project. It contains all the commands that nox will run when you execute it.
@@ -187,6 +214,13 @@ If your tests fail, then it can be due to three main reasons:
 >![Coverage Report](images/coverage-screenshot-1.png)
 >![Coverage Report](images/coverage-screenshot-2.png)
 >![Coverage Report](images/coverage-screenshot-3.png)
+
+> **Warning:**
+> If your `index.html` file doesn't contain every python file in the project barring `notify_discord.py`, then you can run the following command to generate a new coverage report:
+>
+> ```bash
+> coverage html
+> ```
 
 Great you've seen the coverage report and have identified areas for improvement! Here are instructions for testing the bot.
 
