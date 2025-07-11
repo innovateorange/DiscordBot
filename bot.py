@@ -5,7 +5,7 @@ from discord.ext import commands
 import os
 import sys
 from dotenv import load_dotenv
-from data_processing.job_event import getJobs, paste_jobs_command, format_jobs_message, filter_jobs
+from data_processing.job_event import getJobs, paste_jobs_command, format_jobs_message
 
 # Set up Discord Intents to enable bot to receive message events
 intents: discord.Intents = discord.Intents.default()
@@ -163,10 +163,9 @@ async def jobs(ctx, *, args: str = "") -> None:
     """
 
     # Path to your CSV file
-    csv_file_path = "data_collections\\runningCSV.csv"
     try:
         # Use the enhanced getJobs function that handles filtering internally
-        filtered_jobs = getJobs(csv_file_path, args)
+        filtered_jobs = getJobs("data_collections/runningCSV.csv", args)
 
         # Print filters for message formatting
         filters = paste_jobs_command(args) if args.strip() else {}

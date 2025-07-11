@@ -1,9 +1,7 @@
 import re
 from typing import List, Dict, Any
 import sys
-
-# from internships import getInternships
-from data_collections.csv_updater import extract_entries_from_csv, remove_duplicates
+from data_collections.csv_updater import extract_entries_from_csv
 
 if sys.stdout.encoding != "utf-8":
     sys.stdout.reconfigure(encoding="utf-8")
@@ -126,7 +124,6 @@ def filter_jobs(jobs: List[Dict[str, Any]], filters: Dict[str, Any]) -> List[Dic
                 job.get("Company", ""),
                 job.get("Description", ""),
                 job.get("Type", ""),
-                job.get("Company", ""),
                 job.get("Location", ""),
                 job.get("whenDate", ""),
                 job.get("pubDate", ""),
@@ -154,7 +151,6 @@ def filter_jobs(jobs: List[Dict[str, Any]], filters: Dict[str, Any]) -> List[Dic
         if filters.get("type") and include_job:
             type_match = (
                 filters["type"].lower() in job.get("Title", "").lower()
-                or filters["type"].lower() in job.get("Description", "").lower()
                 or filters["type"].lower() in job.get("Type", "").lower()
             )
             if not type_match:
@@ -167,7 +163,6 @@ def filter_jobs(jobs: List[Dict[str, Any]], filters: Dict[str, Any]) -> List[Dic
                 or filters["season"].lower() in job.get("Description", "").lower()
                 or filters["season"].lower() in job.get("whenDate", "").lower()
                 or filters["season"].lower() in job.get("pubDate", "").lower()
-                or filters["season"].lower() in job.get("Description", "").lower()
             )
             if not season_match:
                 include_job = False
@@ -179,7 +174,6 @@ def filter_jobs(jobs: List[Dict[str, Any]], filters: Dict[str, Any]) -> List[Dic
                 or filters["company"].lower() in job.get("Company", "").lower()
                 or filters["company"].lower() in job.get("Description", "").lower()
                 or filters["company"].lower() in job.get("entryDate", "").lower()
-                or filters["company"].lower() in job.get("Description", "").lower()
             )
             if not company_match:
                 include_job = False
@@ -226,10 +220,9 @@ def format_jobs_message(jobs: List[Dict[str, Any]], filters: Dict[str, Any] = No
 
     message = f"💼 **Found {len(jobs)} job(s){filter_text}:**\n\n"
 
-    # Limit to first 10 jobs to avoid Discord message length limits
-    display_jobs = jobs[:10]
+    jobs_added = 0
 
-    for job in display_jobs:
+    for job in jobs:
         title = job.get("Title", "Untitled Position")
         type = job.get("Type", "")
         companyName = job.get("Company", "")
@@ -256,11 +249,23 @@ def format_jobs_message(jobs: List[Dict[str, Any]], filters: Dict[str, Any] = No
         if link:
             job_text += f"🔗 [Apply Here]({link})\n"
 
+        test_message = message + job_text + "\n"
+        if len(test_message) > 1900:
+            break
         message += job_text + "\n"
+        jobs_added += 1
 
-    if len(jobs) > 10:
-        message += f"... and {len(jobs) - 10} more jobs. Use more specific filters to narrow results."
-
+    if len(jobs) > jobs_added:
+        remaining = len(jobs) - jobs_added
+        more_text = f"... and {remaining} more job(s). Use more specific filters to narrow results."
+        
+        # Make sure the final message doesn't exceed the limit
+        if len(message + more_text) > 1900:
+            # Truncate the message further if needed
+            available_space = 1900 - len(more_text) - 10 
+            message = message[:available_space] + "...\n\n"
+        
+        message += more_text
     return message
 
 
@@ -277,26 +282,13 @@ def getJobs(csv_file_path: str, command_args: str = "") -> List[Dict[str, Any]]:
     """
     try:
         jobs = extract_entries_from_csv(csv_file_path)
-        jobs = remove_duplicates(jobs)
 
         filtered_jobs = []
         for job in jobs:
             job_type = job.get("Type", "").lower()
-            title = job.get("Title", "").lower()
-            description = job.get("Description", "").lower()
-            job_keywords = [
-                "job", "internship", "intern", "full-time", "part-time", 
-                "co-op", "coop"
-            ]
-            is_job_related = any(
-                keyword in job_type or 
-                keyword in title or 
-                keyword in description
-                for keyword in job_keywords
-            )
-            if is_job_related:
+            if not job_type or any(term in job_type for term in ["Job", "Internship"]):
                 filtered_jobs.append(job)
-
+        
         jobs = filtered_jobs
 
         # Apply filters if command_args provided
@@ -305,7 +297,6 @@ def getJobs(csv_file_path: str, command_args: str = "") -> List[Dict[str, Any]]:
             jobs = filter_jobs(jobs, filters)
 
         return jobs
-
     except Exception as e:
         print(f"❌ Error loading or filtering jobs from CSV: {e}")
         return []
