@@ -4,7 +4,6 @@ import pandas as pd
 
 def print_events(message: str) -> str:
     database = pd.read_csv("data_collections/runningCSV.csv")
-    return_msg = ""
     count = 0
     '''in the message look for month and common tags'''
     months = ["january", "february", "march", "april", "may", "june","july", "august", "september", "october", "november", "december"]
@@ -22,6 +21,7 @@ def print_events(message: str) -> str:
         if tag in message.lower():
             tags.append(tag)
        
+    return_msg = f"Looking for events in {month}"
     for row in database.itertuples():
         event_found = 0
         if count < 10:
