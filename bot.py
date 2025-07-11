@@ -5,7 +5,7 @@ from discord.ext import commands
 import os
 import sys
 from dotenv import load_dotenv
-from data_collections.print_events import default
+from data_collections.print_events import default, print_events
 
 
 # Set up Discord Intents to enable bot to receive message events
@@ -121,9 +121,13 @@ async def events(ctx, *, message = None) -> None:
     Sends a message listing upcoming club events and their dates in response to the `!events` command.
     """
     try:
+        if message:
+            ret = print_events(message)   
+        else:
+            ret = default(message)
         await ctx.send(
-            default()
-        )
+                ret
+            )
         
         
     except Exception as error:
