@@ -87,7 +87,7 @@ def print_events(message: str) -> str:
 def default() -> str:
     database = pd.read_csv("data_collections/runningCSV.csv")
     return_msg = ""
-    for row in database.head(10).itertuples():
+    for row in database.head(8).itertuples():
         event_title = row.Title
         event_when_date = row.whenDate
         event_link = row.link
@@ -99,7 +99,7 @@ def default() -> str:
             f"Where: {event_location}\n"
             f"Link: {event_link} \n\n"
         )
-   
+    return_msg = return_msg[:1999]
     return return_msg
 
 
