@@ -5,6 +5,7 @@ from discord.ext import commands
 import os
 import sys
 from dotenv import load_dotenv
+import csv
 
 # Set up Discord Intents to enable bot to receive message events
 intents: discord.Intents = discord.Intents.default()
@@ -116,14 +117,31 @@ async def resume(ctx) -> None:
 @bot.command()
 async def events(ctx) -> None:
     """
-    Sends a message listing upcoming club events and their dates in response to the `!events` command.
+    Sends a message listing upcoming events and their details from the CSV file.
     """
-    await ctx.send(
-        "📅 Upcoming Events:\n"
-        "- April 12: Git Workshop\n"
-        "- April 19: LeetCode Challenge Night\n"
-        "- April 26: Final Meeting + Pizza 🍕"
-    )
+    events = []
+    csv_path = "data_collections/runningCSV.csv"
+    try:
+        with open(csv_path, newline="", encoding="utf-8") as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                if row["Type"].strip().lower() == "event":
+                    title = row["Title"]
+                    date = row["whenDate"]
+                    location = row["Location"]
+                    link = row["link"]
+                    events.append(
+                        f"**{title}**\n🗓 {date}\n📍 {location}\n🔗 [More Info]({link})\n"
+                    )
+    except Exception as e:
+        await ctx.send("❌ Could not load events data.")
+        print(f"Error reading events: {e}")
+        return
+
+    if events:
+        await ctx.send("📅 **Upcoming Events:**\n\n" + "\n".join(events))
+    else:
+        await ctx.send("No upcoming events found.")
 
 
 # !resources command placeholder
