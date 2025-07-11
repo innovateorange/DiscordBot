@@ -115,35 +115,42 @@ async def resume(ctx) -> None:
 
 # !events command placeholder
 @bot.command()
-async def events(ctx) -> None:
+async def events(ctx, *args) -> None:
     """
     Sends a message listing upcoming events and their details from the CSV file.
+    If no parameters are provided, only the first 10 events are shown.
     """
     events = []
-    csv_path = "data_collections/dummy_data.csv"
+    csv_path = "data_collections/runningCSV.csv"
     try:
         with open(csv_path, newline="", encoding="utf-8") as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
                 if row.get("Type", "").strip().lower() == "event":
-                    title = row.get("Title", "(No Title)")
-                    date = row.get("whenDate", "(No Date)")
-                    location = row.get("Location", "(No Location)")
-                    link = row.get("link", "")
-                    events.append(
-                        f"**{title}**\n🗓 {date}\n📍 {location}\n🔗 [More Info]({link})\n"
-                    )
+                    title = row.get("Title") or row.get("title") or "(No Title)"
+                    date = row.get("whenDate") or row.get("date") or "(No Date)"
+                    location = row.get("Location") or row.get("location") or "(No Location)"
+                    link = row.get("link") or row.get("Link") or ""
+                    # Only add if at least title or date is present
+                    if title.strip() or date.strip():
+                        events.append(
+                            f"**{title}**\n🗓 {date}\n📍 {location}\n🔗 [More Info]({link})\n"
+                        )
     except Exception as e:
         await ctx.send("❌ Could not load events data.")
         print(f"Error reading events: {e}")
         return
 
+    # If no parameters, limit to first 10 events
+    if not args:
+        events = events[:3]
+
     if not events:
         await ctx.send("No upcoming events found.")
         return
 
-    # Split events into chunks under 4000 characters, header only on first chunk
-    max_length = 4000
+    # Split events into chunks under 2000 characters, header only on first chunk
+    max_length = 2000
     header = "📅 **Upcoming Events:**\n\n"
     chunks = []
     current_chunk = header
