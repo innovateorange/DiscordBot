@@ -101,7 +101,7 @@ def default() -> str:
         )
 
     return_msg = return_msg[:1999]
-    if not return_msg:
+    if len(return_msg) < 5:
         return_msg = "No events found :("
     return return_msg
 
