@@ -7,13 +7,13 @@ def print_events(message: str) -> str:
     return_msg = ""
     count = 0
     '''in the message look for month and common tags'''
-    months = ["January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"]
+    months = ["january", "february", "march", "april", "may", "june","july", "august", "september", "october", "november", "december"]
     common_tags = ["job fair", "career fair", "workshop", "info session", "ecs",  "information session", "session"]
 
 
     date = ""
     for month in months:
-        if month in message:
+        if month in message.lower():
             date = month
             break
    
@@ -27,7 +27,7 @@ def print_events(message: str) -> str:
         if count < 10:
             '''if we find a date'''
             if date:
-                if date in row.whenDate:
+                if date in row.whenDate.lower():
                     '''now check if there are tags'''
                     if not tags:
                         event_title = row.Title
@@ -99,7 +99,10 @@ def default() -> str:
             f"Where: {event_location}\n"
             f"Link: {event_link} \n\n"
         )
+
     return_msg = return_msg[:1999]
+    if not return_msg:
+        return_msg = "No events found :("
     return return_msg
 
 
