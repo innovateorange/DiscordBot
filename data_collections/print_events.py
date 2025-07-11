@@ -21,10 +21,10 @@ def print_events(message: str) -> str:
         if tag in message.lower():
             tags.append(tag)
        
-    return_msg = f"Looking for events in {month.upper()}\n"
+    return_msg = ""
     for row in database.itertuples():
         event_found = 0
-        if count < 10:
+        if count < 8:
             '''if we find a date'''
             if date:
                 if date in row.whenDate.lower():
@@ -73,8 +73,9 @@ def print_events(message: str) -> str:
             f"Link: {event_link} \n\n"
         )
 
-
-
+    return_msg = return_msg[:1999]
+    if len(return_msg) < 20:
+        return_msg = "No events found :("
 
     return return_msg
                
