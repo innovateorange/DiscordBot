@@ -116,7 +116,7 @@ async def resume(ctx) -> None:
 
 # !events command placeholder
 @bot.command()
-async def events(ctx, *, message = "") -> None:
+async def events(ctx, *, message = None) -> None:
     """
     Sends a message listing upcoming club events and their dates in response to the `!events` command.
     """
@@ -124,7 +124,7 @@ async def events(ctx, *, message = "") -> None:
         if message:
             ret = print_events(message)   
         else:
-            ret = default(message)
+            ret = default()
         await ctx.send(
                 ret
             )
