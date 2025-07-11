@@ -116,23 +116,19 @@ async def resume(ctx) -> None:
 
 # !events command placeholder
 @bot.command()
-async def events(ctx, *, message = None) -> None:
+async def events(ctx, *, message=None) -> None:
     """
     Sends a message listing upcoming club events and their dates in response to the `!events` command.
     """
     try:
         if message:
-            ret = print_events(message)   
+            ret = print_events(message)
         else:
             ret = default()
-        await ctx.send(
-                ret
-            )
-        
-        
+        await ctx.send(ret)
+
     except Exception as error:
-        await ctx.send(f"Couldn't find events :( Error: {error}" 
-        )
+        await ctx.send(f"Couldn't find events :( Error: {error}")
 
 
 # !resources command placeholder
