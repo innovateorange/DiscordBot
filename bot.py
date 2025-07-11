@@ -120,16 +120,16 @@ async def events(ctx) -> None:
     Sends a message listing upcoming events and their details from the CSV file.
     """
     events = []
-    csv_path = "data_collections/runningCSV.csv"
+    csv_path = "data_collections/dummy_data.csv"
     try:
         with open(csv_path, newline="", encoding="utf-8") as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
-                if row["Type"].strip().lower() == "event":
-                    title = row["Title"]
-                    date = row["whenDate"]
-                    location = row["Location"]
-                    link = row["link"]
+                if row.get("Type", "").strip().lower() == "event":
+                    title = row.get("Title", "(No Title)")
+                    date = row.get("whenDate", "(No Date)")
+                    location = row.get("Location", "(No Location)")
+                    link = row.get("link", "")
                     events.append(
                         f"**{title}**\n🗓 {date}\n📍 {location}\n🔗 [More Info]({link})\n"
                     )
@@ -138,10 +138,27 @@ async def events(ctx) -> None:
         print(f"Error reading events: {e}")
         return
 
-    if events:
-        await ctx.send("📅 **Upcoming Events:**\n\n" + "\n".join(events))
-    else:
+    if not events:
         await ctx.send("No upcoming events found.")
+        return
+
+    # Split events into chunks under 4000 characters, header only on first chunk
+    max_length = 4000
+    header = "📅 **Upcoming Events:**\n\n"
+    chunks = []
+    current_chunk = header
+    for event in events:
+        event_text = event + "\n"
+        if len(current_chunk) + len(event_text) > max_length:
+            chunks.append(current_chunk)
+            current_chunk = event_text  # No header for subsequent chunks
+        else:
+            current_chunk += event_text
+    if current_chunk.strip():
+        chunks.append(current_chunk)
+
+    for chunk in chunks:
+        await ctx.send(chunk.strip())
 
 
 # !resources command placeholder
