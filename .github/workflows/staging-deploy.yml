@@ -1,0 +1,32 @@
+name: Deploy to Staging - to GCP VM
+
+on:
+    push:
+        branches: [stage]
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        environment: Staging
+
+        steps:
+            - name: Checkout repo
+              uses: actions/checkout@v4
+
+            - name: Set up SSH
+              run: |
+                mkdir -p ~/.ssh
+                echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+                chmod 600 ~/.ssh/id_ed25519
+                ssh-keyscan -H ${{ secrets.GCP_VM_IP }} >> ~/.ssh/known_hosts
+ 
+            - name: SSH and Pull + Restart Bot
+              run: |
+                ssh -i ~/.ssh/id_ed25519 ${{ secrets.GCP_VM_USER }}@${{ secrets.GCP_VM_IP }} << 'EOF'
+                    cd /home/github-actions/DiscordBot-staging
+
+                    cat <<EOT > .env
+                DISCORD_BOT_TOKEN=${{ secrets.DISCORD_BOT_TOKEN }}
+                    EOT
+                    git pull origin stage
+                    sudo systemctl restart discordbot.service
+                EOF
