@@ -2,11 +2,13 @@
 # This file contains unit tests for the Discord bot commands
 # It uses Python's unittest framework with async support for testing Discord.py commands
 
+import asyncio
 import unittest
 from unittest.mock import AsyncMock, MagicMock, patch
-import asyncio
-from bot import bot, run_bot  # Import the bot instance directly
+
 import discord
+
+from bot import bot, run_bot  # Import the bot instance directly
 
 
 class TestCSClubBot(unittest.IsolatedAsyncioTestCase):

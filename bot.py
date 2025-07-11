@@ -1,9 +1,10 @@
 # bot.py
 
-import discord
-from discord.ext import commands
 import os
 import sys
+
+import discord
+from discord.ext import commands
 from dotenv import load_dotenv
 
 # Set up Discord Intents to enable bot to receive message events

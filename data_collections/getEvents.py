@@ -1,6 +1,7 @@
-import feedparser
-import re
 import datetime
+import re
+
+import feedparser
 
 
 def getEvents(url):

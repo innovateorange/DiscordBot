@@ -1,6 +1,7 @@
-from data_collections.getEvents import getEvents
-from unittest.mock import MagicMock, patch
 import unittest
+from unittest.mock import MagicMock, patch
+
+from data_collections.getEvents import getEvents
 
 sample_return = {
     "entries": [

@@ -1,7 +1,9 @@
-from data_collections.getEvents import getEvents
 import os
+
 import pandas as pd
 from dotenv import load_dotenv
+
+from data_collections.getEvents import getEvents
 
 
 def items_to_csv(data: list[dict], path_to_file: str):

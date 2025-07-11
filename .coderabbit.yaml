@@ -2,9 +2,12 @@
 language: "en-US"
 early_access: false
 reviews:
-  profile: "chill"
-  request_changes_workflow: false
+  profile: "assertive"
+  request_changes_workflow: true
   high_level_summary: true
+  fail_commit_status: true
+  collapse_walkthrough: true
+  auto_apply_labels: true
   poem: true
   review_status: true
   collapse_walkthrough: false

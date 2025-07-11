@@ -1,7 +1,8 @@
-import unittest
 import sys
+import unittest
+from unittest.mock import MagicMock, mock_open, patch
+
 import notify_discord
-from unittest.mock import patch, mock_open, MagicMock
 
 
 class TestNotifyDiscord(unittest.TestCase):
