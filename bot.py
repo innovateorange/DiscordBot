@@ -6,6 +6,8 @@ import sys
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
+from data_collections.print_events import default, print_events
+
 
 # Set up Discord Intents to enable bot to receive message events
 intents: discord.Intents = discord.Intents.default()
@@ -122,17 +124,20 @@ async def resume(ctx) -> None:
 
 # !events command placeholder
 @bot.command()
-async def events(ctx) -> None:
+async def events(ctx, *, message=None) -> None:
     """
     Sends a message listing upcoming club events and their dates in
     response to the `!events` command.
     """
-    await ctx.send(
-        "📅 Upcoming Events:\n"
-        "- April 12: Git Workshop\n"
-        "- April 19: LeetCode Challenge Night\n"
-        "- April 26: Final Meeting + Pizza 🍕"
-    )
+    try:
+        if message:
+            ret = print_events(message)
+        else:
+            ret = default()
+        await ctx.send(ret)
+
+    except Exception as error:
+        await ctx.send(f"Couldn't find events :( Error: {error}")
 
 
 # !resources command placeholder
