@@ -4,14 +4,14 @@ name: Python package
 on:
   workflow_dispatch:
   push:
-    branches: ["main", 'stable/*']
+    branches: ["main", "stage", "release/*", "stable/*"]
     paths:
       - '**/*.py'
       - '**/*.pyi'
       - 'requirements.txt'
       - 'noxfile.py'
   pull_request:
-    branches: ["main", 'stable/*']
+    branches: ["main", "stage", "release/*", "stable/*"]
     paths:
       - '**/*.py'
       - '**/*.pyi'

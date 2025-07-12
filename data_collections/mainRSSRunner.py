@@ -1,9 +1,11 @@
 """"""
 
-from dotenv import load_dotenv
-from .events import getEvents
-from .csv_updater import items_to_csv
 import os
+
+from dotenv import load_dotenv
+
+from .csv_updater import items_to_csv
+from .events import getEvents
 
 
 def run_events_RSS(url):
