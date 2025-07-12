@@ -1,11 +1,13 @@
-import unittest
-from unittest.mock import patch, mock_open
 import os
-import pandas as pd
 import tempfile
+import unittest
+from unittest.mock import mock_open, patch
+
+import pandas as pd
+
 from data_collections.csv_updater import (
-    items_to_csv,
     extract_entries_from_csv,
+    items_to_csv,
     remove_duplicates,
 )
 

@@ -2,11 +2,13 @@
 # This file contains unit tests for the Discord bot commands
 # It uses Python's unittest framework with async support for testing Discord.py commands
 
+import asyncio
 import unittest
 from unittest.mock import AsyncMock, MagicMock, patch
-import asyncio
-from bot import bot, run_bot  # Import the bot instance directly
+
 import discord
+
+from bot import bot, run_bot  # Import the bot instance directly
 
 
 class TestCSClubBot(unittest.IsolatedAsyncioTestCase):
@@ -121,7 +123,7 @@ class TestCSClubBot(unittest.IsolatedAsyncioTestCase):
         bot.dispatch("member_join", mock_member)
         await asyncio.sleep(0)
 
-        expected_message = f"Welcome to **Test Server**, {mock_member.mention}! Feel free to introduce yourself in <#{mock_networking_channel.id}>"
+        expected_message = f"Welcome to **Test Server**, {mock_member.mention}! Feel free to introduce yourself in <#{mock_networking_channel.id}>"  # noqa: E501
         mock_welcome_channel.send.assert_called_once_with(expected_message)
         mock_member.send.assert_not_called()
 
@@ -143,7 +145,7 @@ class TestCSClubBot(unittest.IsolatedAsyncioTestCase):
         bot.dispatch("member_join", mock_member)
         await asyncio.sleep(0)
 
-        expected_message = f"Welcome to **Test Server**, {mock_member.mention}! Feel free to introduce yourself in #networking"
+        expected_message = f"Welcome to **Test Server**, {mock_member.mention}! Feel free to introduce yourself in #networking"  # noqa: E501
         mock_welcome_channel.send.assert_called_once_with(expected_message)
 
     async def test_on_member_join_fallback_to_general(self):
@@ -242,7 +244,7 @@ class TestCSClubBot(unittest.IsolatedAsyncioTestCase):
         await asyncio.sleep(0)
 
         mock_print.assert_any_call(
-            f"❌ Could not send welcome message for {mock_member.display_name} - missing permissions"
+            f"❌ Could not send welcome message for {mock_member.display_name} - missing permissions"  # noqa: E501
         )
 
     @patch("builtins.print")
@@ -263,7 +265,7 @@ class TestCSClubBot(unittest.IsolatedAsyncioTestCase):
         await asyncio.sleep(0)
 
         mock_print.assert_any_call(
-            f"❌ Error sending welcome message for {mock_member.display_name}: Test error"
+            f"❌ Error sending welcome message for {mock_member.display_name}: Test error"  # noqa: E501
         )
 
 
