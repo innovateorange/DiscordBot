@@ -1,6 +1,5 @@
 import pandas as pd
 
-
 def print_events(message: str) -> str:
     database = pd.read_csv("data_collections/runningCSV.csv")
     count = 0
@@ -50,53 +49,26 @@ def print_events(message: str) -> str:
                 if date in row.whenDate.lower():
                     """now check if there are tags"""
                     if not tags:
-                        event_title = row.Title
-                        event_when_date = row.whenDate
-                        event_link = row.link
-                        event_location = (
-                            row.Location if pd.notna(row.Location) else "N/A"
-                        )
                         event_found += 1
                     else:
                         for tag in tags:
                             if tag in row.Title.lower():
-                                event_title = row.Title
-                                event_when_date = row.whenDate
-                                event_link = row.link
-                                event_location = (
-                                    row.Location if pd.notna(row.Location) else "N/A"
-                                )
                                 event_found += 1
             else:
                 """this is for if we find no date, same system for checking tags"""
                 if not tags:
                     """if found no matching tags/month, just give first 10"""
-                    event_title = row.Title
-                    event_when_date = row.whenDate
-                    event_link = row.link
-                    event_location = row.Location if pd.notna(row.Location) else "N/A"
                     event_found += 1
                 else:
                     for tag in tags:
                         if tag in row.Title.lower():
-                            event_title = row.Title
-                            event_when_date = row.whenDate
-                            event_link = row.link
-                            event_location = (
-                                row.Location if pd.notna(row.Location) else "N/A"
-                            )
                             event_found += 1
         else:
             break
 
         """if they find the events we add it.... duh"""
         if event_found > 0:
-            return_msg += (
-                f"**{event_title}**\n"
-                f"When: {event_when_date}\n"
-                f"Where: {event_location}\n"
-                f"Link: {event_link} \n\n"
-            )
+            return_msg += getitems(row)
 
     """Cut off the message if it turns out to be too long"""
     return_msg = return_msg[:1999]
@@ -115,19 +87,25 @@ def default() -> str:
 
     """go through first 8 rows"""
     for row in database.head(8).itertuples():
-        event_title = row.Title
-        event_when_date = row.whenDate
-        event_link = row.link
-        event_location = row.Location if pd.notna(row.Location) else "N/A"
+        return_msg += getitems(row)
 
-        return_msg += (
-            f"**{event_title}**\n"
-            f"When: {event_when_date}\n"
-            f"Where: {event_location}\n"
-            f"Link: {event_link} \n\n"
-        )
-
+    """Cut off message if too long, handle no events found"""
     return_msg = return_msg[:1999]
     if len(return_msg) < 20:
         return_msg = "No events found :("
     return return_msg
+
+'''This handles getting the information from the row when an event is added'''
+def getitems(row) -> str:
+    event_title = row.Title if pd.notna(row.Title) else "N/A"
+    event_when_date = row.whenDate if pd.notna(row.whenDate) else "N/A"
+    event_link = row.link if pd.notna(row.link) else "N/A"
+    event_location = row.Location if pd.notna(row.Location) else "N/A"
+
+    message = (
+        f"**{event_title}**\n"
+        f"When: {event_when_date}\n"
+        f"Where: {event_location}\n"
+        f"Link: {event_link} \n\n"
+        )
+    return message
