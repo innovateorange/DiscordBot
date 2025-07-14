@@ -61,7 +61,10 @@ def format_jobs_message(
         return "💼 No jobs found matching your criteria."
     filter_text = f" (Filters: {_filters.strip()})" if _filters else ""
     message = f"💼 **Found {len(jobs)} job(s):{filter_text}**\n\n"
-    limitted_jobs = jobs[:10]
+    limited_jobs = jobs[:10]
+    for job in limited_jobs:
+        # existing processing of job
+        ...
     for job in limitted_jobs:
         title = job.get("Title", "Untitled Position")
         job_type = job.get("Type", "")
