@@ -165,7 +165,7 @@ async def jobs(ctx, *, args: str = "") -> None:
     """
     Searches for jobs and internships based on specified criteria.
 
-    Usage: !jobs [search_critera]
+    Usage: !jobs [search_criteria]
 
     Examples:
     - !jobs software engineer
@@ -176,7 +176,7 @@ async def jobs(ctx, *, args: str = "") -> None:
     csv_file_path = "data_collections/runningCSV.csv"
     try:
         jobs = get_jobs(csv_file_path)
-    except OSError:
+    except (OSError, RuntimeError):
         await ctx.send(
             "Sorry, there was an error searching for jobs. Please try again later."
         )
