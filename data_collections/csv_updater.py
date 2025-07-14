@@ -19,7 +19,7 @@ def extract_entries_from_csv(path: str) -> list[dict]:
     """
     entries_from_csv = []
     try:
-        with open(path, encoding="utf8") as file:
+        with open(path) as file:
             csv_file = csv.DictReader(file)
             for row in csv_file:
                 entries_from_csv.append(row)

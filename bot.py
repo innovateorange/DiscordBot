@@ -6,11 +6,6 @@ import sys
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
-from data_processing.job_event import (
-    get_jobs,
-    format_jobs_message,
-    filter_jobs,
-)
 
 # Set up Discord Intents to enable bot to receive message events
 intents: discord.Intents = discord.Intents.default()
@@ -110,7 +105,6 @@ async def help(ctx) -> None:
         "`!resume` – Link to engineering resume resources\n"
         "`!events` – See upcoming club events\n"
         "`!resources` – Get recommended CS learning materials\n"
-        "`!jobs search-terms` – Search for jobs and internships\n\n"
     )
     await ctx.send(help_message)
 
@@ -155,33 +149,6 @@ async def resources(ctx) -> None:
         "- [FreeCodeCamp](https://www.freecodecamp.org/)\n"
         "- [LeetCode](https://leetcode.com/)"
     )
-
-
-@bot.command()
-async def jobs(ctx, *, args: str = "") -> None:
-    """
-    Searches for jobs and internships based on specified criteria.
-
-    Usage: !jobs [search_critera]
-
-    Examples:
-    - !jobs software engineer
-    - !jobs google remote
-    - !jobs python internship summer
-    - !jobs microsoft internship
-    """
-    csv_file_path = "data_collections/runningCSV.csv"
-    try:
-        jobs = get_jobs(csv_file_path)
-    except OSError:
-        await ctx.send(
-            "Sorry, there was an error searching for jobs. Please try again later."
-        )
-    else:
-        args = "" if not args else args.strip()
-        jobs = filter_jobs(jobs, args)
-        message = format_jobs_message(jobs, args)
-        await ctx.send(message)
 
 
 def run_bot() -> None:
