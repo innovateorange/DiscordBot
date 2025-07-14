@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 def print_events(message: str) -> str:
     database = pd.read_csv("data_collections/runningCSV.csv")
     count = 0
@@ -95,7 +96,10 @@ def default() -> str:
         return_msg = "No events found :("
     return return_msg
 
-'''This handles getting the information from the row when an event is added'''
+
+"""This handles getting the information from the row when an event is added"""
+
+
 def getitems(row) -> str:
     event_title = row.Title if pd.notna(row.Title) else "N/A"
     event_when_date = row.whenDate if pd.notna(row.whenDate) else "N/A"
@@ -107,5 +111,5 @@ def getitems(row) -> str:
         f"When: {event_when_date}\n"
         f"Where: {event_location}\n"
         f"Link: {event_link} \n\n"
-        )
+    )
     return message
