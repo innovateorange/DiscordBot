@@ -15,7 +15,7 @@ def filter_jobs(
 
     Args:
         jobs (list): List of job dictionaries
-        filters (dict): Dictionary of filter criteria
+        _filters (str): Space-separated search terms for filtering
 
     Returns:
         list: Filtered list of jobs
