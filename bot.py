@@ -113,7 +113,7 @@ async def help(ctx) -> None:
         "`!resume` – Link to engineering resume resources\n"
         "`!events` – See upcoming club events\n"
         "`!resources` – Get recommended CS learning materials\n"
-        "`!jobs search-terms` – Search for jobs and internships\n\n"
+        "`!jobs search-criteria` – Search for jobs and internships\n\n"
     )
     await ctx.send(help_message)
 
