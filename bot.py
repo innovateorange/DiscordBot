@@ -74,7 +74,10 @@ async def on_member_join(member: discord.Member) -> None:
     )
 
     # Create welcome message
-    welcome_message = f"Welcome to **{member.guild.name}**, {member.mention}! Feel free to introduce yourself in {networking_mention}"  # noqa: E501
+    welcome_message = (
+        f"Welcome to **{member.guild.name}**, {member.mention}! "
+        f"Feel free to introduce yourself in {networking_mention}"
+    )
 
     try:
         if welcome_channel:

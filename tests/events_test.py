@@ -65,8 +65,7 @@ class TestGetEvents(unittest.TestCase):
         self.assertEqual(result[0]["whenDate"], "")
         self.assertEqual(result[0]["Description"], "Some Description")
 
-    # Test that an event has no Location
-    # When the description does not contain "Location:"
+    # Test that an event has no Location when the description lacks "Location:"
     @patch("feedparser.parse")
     def test_no_Location_in_Description(self, mock_parse):
         mock_parse.return_value = {
