@@ -29,6 +29,7 @@ def print_events(message: str) -> str:
         "session",
     ]
 
+    """We then figure out which month"""
     date = ""
     for month in months:
         if month in message.lower():
@@ -97,6 +98,7 @@ def print_events(message: str) -> str:
                 f"Link: {event_link} \n\n"
             )
 
+    """Cut off the message if it turns out to be too long"""
     return_msg = return_msg[:1999]
     if len(return_msg) < 20:
         return_msg = "No events found :("
@@ -104,12 +106,14 @@ def print_events(message: str) -> str:
     return return_msg
 
 
-"""if no prompt just print the first 10 upcoming events"""
+"""if no prompt just print the first 8 upcoming events"""
 
 
 def default() -> str:
     database = pd.read_csv("data_collections/runningCSV.csv")
     return_msg = ""
+
+    """go through first 8 rows"""
     for row in database.head(8).itertuples():
         event_title = row.Title
         event_when_date = row.whenDate
