@@ -44,7 +44,7 @@ def print_events(message: str) -> str:
     return_msg = ""
     for row in database.itertuples():
         event_found = 0
-        if count < 7:
+        if count < 7 and ("Event" in row.Type):
             """if we find a date"""
             if date:
                 if date in row.whenDate.lower():
