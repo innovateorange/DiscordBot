@@ -71,13 +71,13 @@ async def on_member_join(member: discord.Member) -> None:
     )
 
     # Create welcome message
-    welcome_message = f"Welcome to **{member.guild.name}**, {member.mention}! Feel free to introduce yourself in {networking_mention}" # noqa: E501
+    welcome_message = f"Welcome to **{member.guild.name}**, {member.mention}! Feel free to introduce yourself in {networking_mention}"  # noqa: E501
 
     try:
         if welcome_channel:
             await welcome_channel.send(welcome_message)
             print(
-                f"📨 Welcome message sent for {member.display_name} in #{welcome_channel.name}" # noqa: E501
+                f"📨 Welcome message sent for {member.display_name} in #{welcome_channel.name}"  # noqa: E501
             )
         else:
             # Fallback: send a DM if no suitable channel is found
@@ -89,7 +89,7 @@ async def on_member_join(member: discord.Member) -> None:
     except discord.Forbidden:
         # Bot doesn't have permissions to send messages in the channel or to the user
         print(
-            f"❌ Could not send welcome message for {member.display_name} - missing permissions" # noqa: E501
+            f"❌ Could not send welcome message for {member.display_name} - missing permissions"  # noqa: E501
         )
     except Exception as e:
         print(f"❌ Error sending welcome message for {member.display_name}: {e}")
