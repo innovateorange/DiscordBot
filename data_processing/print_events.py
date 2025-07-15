@@ -44,7 +44,7 @@ def print_events(message: str) -> str:
     return_msg = ""
     for row in database.itertuples():
         event_found = 0
-        if count < 8:
+        if count < 7:
             """if we find a date"""
             if date:
                 if date in row.whenDate.lower():
@@ -79,19 +79,19 @@ def print_events(message: str) -> str:
     return return_msg
 
 
-"""if no prompt just print the first 8 upcoming events"""
+"""if no prompt just print the first 7 upcoming events"""
 
 
 def default() -> str:
     database = pd.read_csv("data_collections/runningCSV.csv")
     return_msg = ""
 
-    """go through first 8 rows"""
-    for row in database.head(8).itertuples():
+    """go through first 7 rows"""
+    for row in database.head(7).itertuples():
         return_msg += getitems(row)
 
     """Cut off message if too long, handle no events found"""
-    return_msg = return_msg[:1999]
+    return_msg = return_msg[:2000]
     if len(return_msg) < 20:
         return_msg = "No events found :("
     return return_msg
@@ -110,6 +110,6 @@ def getitems(row) -> str:
         f"**{event_title}**\n"
         f"When: {event_when_date}\n"
         f"Where: {event_location}\n"
-        f"Link: {event_link} \n\n"
+        f"Link: [Click Here]({event_link}) \n\n"
     )
     return message

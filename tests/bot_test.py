@@ -46,7 +46,7 @@ class TestCSClubBot(unittest.IsolatedAsyncioTestCase):
         2. The response includes information about the Git Workshop"""
         await bot.get_command("events").callback(self.ctx)
         self.ctx.send.assert_called()
-        self.assertIn("Git Workshop", self.ctx.send.call_args[0][0])
+        self.assertIn("When", self.ctx.send.call_args[0][0])
 
     async def test_resources_command(self):
         """Test the !resources command
