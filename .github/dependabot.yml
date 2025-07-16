@@ -10,6 +10,7 @@ updates:
   schedule:
     interval: daily
     time: "13:00"
+  target-branch: "stage"
   groups:
     python-packages:
       patterns:

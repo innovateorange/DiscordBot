@@ -1,10 +1,17 @@
 # bot.py
 
-import discord
-from discord.ext import commands
 import os
 import sys
+
+import discord
+from discord.ext import commands
 from dotenv import load_dotenv
+
+from data_processing.job_event import (
+    filter_jobs,
+    format_jobs_message,
+    get_jobs,
+)
 
 # Set up Discord Intents to enable bot to receive message events
 intents: discord.Intents = discord.Intents.default()
@@ -20,7 +27,8 @@ bot = commands.Bot(command_prefix="!", intents=intents, help_command=None)
 @bot.event
 async def on_ready():
     """
-    Handles the event when the bot has successfully connected to Discord and is ready to operate.
+    Handles the event when the bot has successfully connected to Discord
+    and is ready to operate.
     """
     print(f"✅ Logged in as {bot.user}")
 
@@ -31,7 +39,12 @@ async def on_member_join(member: discord.Member) -> None:
     """
     Sends a welcome message when a new member joins the server.
 
-    Attempts to post the welcome message in a suitable channel (e.g., "welcome", "general", "introductions", or "lobby"), falling back to the system channel or the first available text channel if necessary. If no appropriate channel is found, sends a direct message to the new member. The welcome message includes a mention of the "networking" channel if it exists.
+    Attempts to post the welcome message in a suitable channel
+    (e.g., "welcome", "general", "introductions", or "lobby"),
+    falling back to the system channel or the first available
+    text channel if necessary. If no appropriate channel is found,
+    sends a direct message to the new member. The welcome message
+    includes a mention of the "networking" channel if it exists.
     """
     # Try to find a welcome channel (common names: welcome, general, etc.)
     welcome_channel: discord.TextChannel | None = None
@@ -62,13 +75,13 @@ async def on_member_join(member: discord.Member) -> None:
     )
 
     # Create welcome message
-    welcome_message = f"Welcome to **{member.guild.name}**, {member.mention}! Feel free to introduce yourself in {networking_mention}"
+    welcome_message = f"Welcome to **{member.guild.name}**, {member.mention}! Feel free to introduce yourself in {networking_mention}"  # noqa: E501
 
     try:
         if welcome_channel:
             await welcome_channel.send(welcome_message)
             print(
-                f"📨 Welcome message sent for {member.display_name} in #{welcome_channel.name}"
+                f"📨 Welcome message sent for {member.display_name} in #{welcome_channel.name}"  # noqa: E501
             )
         else:
             # Fallback: send a DM if no suitable channel is found
@@ -80,7 +93,7 @@ async def on_member_join(member: discord.Member) -> None:
     except discord.Forbidden:
         # Bot doesn't have permissions to send messages in the channel or to the user
         print(
-            f"❌ Could not send welcome message for {member.display_name} - missing permissions"
+            f"❌ Could not send welcome message for {member.display_name} - missing permissions"  # noqa: E501
         )
     except Exception as e:
         print(f"❌ Error sending welcome message for {member.display_name}: {e}")
@@ -90,13 +103,15 @@ async def on_member_join(member: discord.Member) -> None:
 @bot.command()
 async def help(ctx) -> None:
     """
-    Sends a message listing all available bot commands and their descriptions in the current channel.
+    Sends a message listing all available bot commands and their
+    descriptions in the current channel.
     """
     help_message = (
         "**🤖 BugBot Commands:**\n"
         "`!resume` – Link to engineering resume resources\n"
         "`!events` – See upcoming club events\n"
         "`!resources` – Get recommended CS learning materials\n"
+        "`!jobs search-terms` – Search for jobs and internships\n\n"
     )
     await ctx.send(help_message)
 
@@ -116,7 +131,8 @@ async def resume(ctx) -> None:
 @bot.command()
 async def events(ctx) -> None:
     """
-    Sends a message listing upcoming club events and their dates in response to the `!events` command.
+    Sends a message listing upcoming club events and their dates in
+    response to the `!events` command.
     """
     await ctx.send(
         "📅 Upcoming Events:\n"
@@ -130,7 +146,8 @@ async def events(ctx) -> None:
 @bot.command()
 async def resources(ctx) -> None:
     """
-    Sends a list of recommended computer science learning resources to the channel in response to the `!resources` command.
+    Sends a list of recommended computer science learning resources
+    to the channel in response to the `!resources` command.
     """
     await ctx.send(
         "📚 CS Learning Resources:\n"
@@ -141,11 +158,40 @@ async def resources(ctx) -> None:
     )
 
 
+@bot.command()
+async def jobs(ctx, *, args: str = "") -> None:
+    """
+    Searches for jobs and internships based on specified criteria.
+
+    Usage: !jobs [search_terms]
+
+    Examples:
+    - !jobs software engineer
+    - !jobs google remote
+    - !jobs python internship summer
+    - !jobs microsoft internship
+    """
+    csv_file_path = "data_collections/runningCSV.csv"
+    try:
+        _jobs = get_jobs(csv_file_path)
+    except (OSError, RuntimeError):
+        await ctx.send(
+            "Sorry, there was an error searching for jobs. Please try again later."
+        )
+    else:
+        args = args.strip()
+        _jobs = filter_jobs(_jobs, args)
+        message = format_jobs_message(_jobs, args)
+        await ctx.send(message)
+
+
 def run_bot() -> None:
     """
-    Loads environment variables, retrieves the Discord bot token, and starts the bot.
+    Loads environment variables, retrieves the Discord bot token,
+    and starts the bot.
 
-    Exits the program with an error message if the environment file is missing or the token is invalid.
+    Exits the program with an error message if the environment file
+    is missing or the token is invalid.
     """
     if load_dotenv():
         token = os.getenv("DISCORD_BOT_TOKEN")

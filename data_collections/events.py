@@ -1,6 +1,7 @@
-import feedparser
-import re
 import datetime
+import re
+
+import feedparser
 
 
 def getEvents(url):
@@ -23,7 +24,7 @@ def getEvents(url):
     try:
         data = feedparser.parse(url)
     except Exception as e:
-        raise RuntimeError(f"Failed to parse the RSS feed from {url}: {e}")
+        raise RuntimeError(f"Failed to parse the RSS feed from {url}: {e}") from e
 
     if getattr(data, "bozo", False):
         raise RuntimeError(

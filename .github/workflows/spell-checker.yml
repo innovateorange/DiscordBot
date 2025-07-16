@@ -2,9 +2,9 @@ name: Spell Checker
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches: ["main", "stage", "feature/*", "hotfix/*", "bugfix/*", "release/*", "stable/*"]
   pull_request:
-    branches: [ main ]
+    branches: ["main", "stage", "feature/*", "hotfix/*", "bugfix/*", "release/*", "stable/*"]
 
 jobs:
   spell-check:
@@ -17,4 +17,3 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
-        

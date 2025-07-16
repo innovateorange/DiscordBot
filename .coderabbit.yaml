@@ -2,13 +2,14 @@
 language: "en-US"
 early_access: false
 reviews:
-  profile: "chill"
+  profile: "assertive"
   request_changes_workflow: false
   high_level_summary: true
+  fail_commit_status: true
+  collapse_walkthrough: true
+  auto_apply_labels: true
   poem: true
   review_status: true
-  collapse_walkthrough: false
-  path_filters: ["**/**"]
   auto_review:
     enabled: true
     drafts: false
