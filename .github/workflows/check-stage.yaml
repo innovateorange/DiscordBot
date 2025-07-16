@@ -1,0 +1,22 @@
+name: Validate Commit Was Deployed to Staging
+on:
+  pull_request:
+    branches:
+      - release/**
+jobs:
+  check-stage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check if commit exists on 'stage'
+        run: |
+          git fetch origin stage
+          if git merge-base --is-ancestor "${{ github.sha }}" origin/stage; then
+              echo "HEAD commit is on stage"
+          else
+              echo "HEAD commit not on stage - must be deployed to staging first"
+              exit 1
+          fi
