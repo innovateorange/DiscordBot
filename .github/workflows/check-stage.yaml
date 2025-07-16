@@ -15,7 +15,8 @@ jobs:
       - name: Check if commit exists on 'stage'
         run: |
           git fetch origin stage
-          if git merge-base --is-ancestor "${{ github.sha }}" origin/stage; then
+          COMMIT_SHA="${{ github.event.pull_request.head.sha }}"
+          if git merge-base --is-ancestor "$COMMIT_SHA" origin/stage; then
               echo "HEAD commit is on stage"
           else
               echo "HEAD commit not on stage - must be deployed to staging first"
