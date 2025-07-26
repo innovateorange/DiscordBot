@@ -86,7 +86,13 @@ def getJobs(url):
         # Retrieves whenDate Information
         match = re.search(r"Expires:\s*(\d{2}/\d{2}/\d{4})", descrip)
         if match:
-            whenDate = match.group(1)
+            date_str = match.group(1)
+            try:
+                # Validate the date format
+                datetime.datetime.strptime(date_str, "%m/%d/%Y")
+                whenDate = date_str
+            except ValueError:
+                whenDate = "Unknown"
 
         # Retrieves Locations Information
         locations = extract_locations(descrip)
@@ -132,7 +138,7 @@ def extract_locations(description):
         location_line = location_line_match.group(1).strip()
 
         # find all "City, ST" or similar
-        matches = re.findall(r"([A-Za-z .\-\'&]+?, [A-Z]{2})", location_line)
+        matches = re.findall(r"([A-Za-z .\-'&]+?, [A-Z]{2})", location_line)
         for loc in matches:
             loc = loc.strip()
 

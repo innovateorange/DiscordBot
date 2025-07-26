@@ -18,6 +18,110 @@ sample_return = {
     ]
 }
 
+sample_return_invalid_date = {
+    "entries": [
+        {
+            "title": "Job with Invalid Date",
+            "description": "Employer: Test Company \n\n"
+            "Expires: 13/45/2025 \n\n"
+            "This job has an invalid date format",
+            "published": "Wed, 29 Jan 2025 20:13:44 +0000",
+            "link": "http://example.com/event2",
+        }
+    ]
+}
+
+sample_return_malformed_date = {
+    "entries": [
+        {
+            "title": "Job with Malformed Date",
+            "description": "Employer: Another Company \n\n"
+            "Expires: not-a-date \n\n"
+            "This job has a malformed date",
+            "published": "Wed, 29 Jan 2025 20:13:44 +0000",
+            "link": "http://example.com/event3",
+        }
+    ]
+}
+
+sample_return_invalid_date = {
+    "entries": [
+        {
+            "title": "Job with Invalid Date",
+            "description": "Employer: Test Company \n\n"
+            "Expires: 13/45/2025 \n\n"
+            "This job has an invalid date format",
+            "published": "Wed, 29 Jan 2025 20:13:44 +0000",
+            "link": "http://example.com/event2",
+        }
+    ]
+}
+
+sample_return_invalid_date = {
+    "entries": [
+        {
+            "title": "Job with Invalid Date",
+            "description": "Employer: Test Company \n\n"
+            "Expires: 13/45/2025 \n\n"
+            "This job has an invalid date format",
+            "published": "Wed, 29 Jan 2025 20:13:44 +0000",
+            "link": "http://example.com/event2",
+        }
+    ]
+}
+
+sample_return_malformed_date = {
+    "entries": [
+        {
+            "title": "Job with Malformed Date",
+            "description": "Employer: Another Company \n\n"
+            "Expires: not-a-date \n\n"
+            "This job has a malformed date",
+            "published": "Wed, 29 Jan 2025 20:13:44 +0000",
+            "link": "http://example.com/event3",
+        }
+    ]
+}
+
+sample_return_malformed_date = {
+    "entries": [
+        {
+            "title": "Job with Malformed Date",
+            "description": "Employer: Another Company \n\n"
+            "Expires: not-a-date \n\n"
+            "This job has a malformed date",
+            "published": "Wed, 29 Jan 2025 20:13:44 +0000",
+            "link": "http://example.com/event3",
+        }
+    ]
+}
+
+sample_return_invalid_date = {
+    "entries": [
+        {
+            "title": "Job with Invalid Date",
+            "description": "Employer: Test Company \n\n"
+            "Expires: 13/45/2025 \n\n"
+            "This job has an invalid date format",
+            "published": "Wed, 29 Jan 2025 20:13:44 +0000",
+            "link": "http://example.com/event2",
+        }
+    ]
+}
+
+sample_return_malformed_date = {
+    "entries": [
+        {
+            "title": "Job with Malformed Date",
+            "description": "Employer: Another Company \n\n"
+            "Expires: not-a-date \n\n"
+            "This job has a malformed date",
+            "published": "Wed, 29 Jan 2025 20:13:44 +0000",
+            "link": "http://example.com/event3",
+        }
+    ]
+}
+
 
 class TestGetJobs(unittest.TestCase):
     """Testing suite for the getJobs method"""
@@ -67,3 +171,21 @@ class TestGetJobs(unittest.TestCase):
         self.assertIn("Boston, MA", result[0]["Location"])
         self.assertIn("Remote", result[0]["Location"])
         self.assertEqual(result[0]["link"], "http://example.com/event1")
+
+    # Test date validation with invalid date format
+    @patch("feedparser.parse")
+    def test_invalid_date_format(self, mock_parse):
+        mock_parse.return_value = sample_return_invalid_date
+        result = getJobs("http://valid-url.com/rss")
+        self.assertEqual(result[0]["whenDate"], "Unknown")
+        self.assertEqual(result[0]["Company"], "Test Company")
+        self.assertEqual(result[0]["Title"], "Job with Invalid Date")
+
+    # Test date validation with malformed date string
+    @patch("feedparser.parse")
+    def test_malformed_date_string(self, mock_parse):
+        mock_parse.return_value = sample_return_malformed_date
+        result = getJobs("http://valid-url.com/rss")
+        self.assertEqual(result[0]["whenDate"], "Unknown")
+        self.assertEqual(result[0]["Company"], "Another Company")
+        self.assertEqual(result[0]["Title"], "Job with Malformed Date")
