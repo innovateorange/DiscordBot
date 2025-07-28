@@ -12,5 +12,5 @@
 
 # Any code within the data-processing directory
 # is owned by the folllwing
-/data_processing @alantomw
+/data_processing bot.py @alantomw
 

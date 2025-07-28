@@ -2,9 +2,9 @@ name: Spell Checker
 on:
   workflow_dispatch:
   push:
-    branches: ["main", "stage", "feature/*", "hotfix/*", "bugfix/*", "release/*", "stable/*"]
+    branches: ["main", "feature/*", "hotfix/*", "bugfix/*", "release/*", "stable/*"]
   pull_request:
-    branches: ["main", "stage", "feature/*", "hotfix/*", "bugfix/*", "release/*", "stable/*"]
+    branches: ["main", "feature/*", "hotfix/*", "bugfix/*", "release/*", "stable/*"]
 
 jobs:
   spell-check:
