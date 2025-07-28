@@ -1,9 +1,11 @@
-name: Validate Commit Was Deployed to Staging
+name: Validate Commits Are in Stage
+
 on:
   workflow_dispatch:
   pull_request:
     branches:
       - release/**
+
 jobs:
   check-stage:
     runs-on: ubuntu-latest
@@ -12,12 +14,47 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Check if commit exists on 'stage'
+
+      - name: Fetch remote branches
+        run: git fetch origin
+
+      - name: Check that all commits from PR branch exist in stage
         run: |
-          git fetch origin stage
-          if git merge-base --is-ancestor "${{ github.sha }}" origin/stage; then
-              echo "HEAD commit is on stage"
+          # Get source branch and target branch
+          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+
+          echo "PR base is: $BASE_SHA"
+          echo "PR head is: $HEAD_SHA"
+
+          # Get list of commits in the PR branch that are not in the base
+          PR_COMMITS=$(git rev-list $BASE_SHA..$HEAD_SHA)
+
+          echo "Commits in PR:"
+          echo "$PR_COMMITS"
+
+          # Loop over commits and check if each is in stage
+          MISSING_IN_STAGE=0
+          for COMMIT in $PR_COMMITS; do
+
+            PARENTS=$(git rev-list --parents -n 1 $COMMIT | wc -w)
+
+            if [ "PARENTS" -GT 2 ]; then
+              echo "Skipping merge commit $COMMIT"
+              continue
+            fi
+
+            if ! git branch -r --contains $COMMIT | grep -q 'origin/stage'; then
+              echo "Commit $COMMIT is NOT in stage"
+              MISSING_IN_STAGE=1
+            else
+              echo "Commit $COMMIT is in stage"
+            fi
+          done
+
+          if [ "$MISSING_IN_STAGE" -eq 1 ]; then
+            echo "Some commits are not in stage. You must deploy to staging first."
+            exit 1
           else
-              echo "HEAD commit not on stage - must be deployed to staging first"
-              exit 1
+            echo "All commits have been deployed to staging."
           fi
