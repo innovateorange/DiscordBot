@@ -1,9 +1,9 @@
 discord==2.3.2
 nox==2025.5.1
-ruff==0.12.4
+ruff==0.12.8
 black==25.1.0
 feedparser==6.0.11
-coverage==7.9.2
+coverage==7.10.3
 requests==2.32.4
 python-dotenv==1.1.1
 pandas==2.3.1
