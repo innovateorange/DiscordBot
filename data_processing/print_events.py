@@ -53,9 +53,9 @@ def print_events(message: str) -> str:
     return_msg = ""
     for row in database.itertuples():
         event_found = 0
-        if count < 7 and ("Event" in row.Type):
+        if count < 7:
             """if we find a date"""
-            if date:
+            if date and "Event" in row.Type:
                 if date in row.whenDate.lower():
                     """now check if there are tags"""
                     if not tags:
@@ -64,7 +64,7 @@ def print_events(message: str) -> str:
                         for tag in tags:
                             if tag in row.Title.lower():
                                 event_found += 1
-            else:
+            elif "Event" in row.Type:
                 """this is for if we find no date, same system for checking tags"""
                 if not tags:
                     """if found no matching tags/month, just give first 10"""
