@@ -27,6 +27,15 @@ def print_events(message: str) -> str:
         "ecs",
         "information session",
         "session",
+        "fair",
+        "panel",
+        "open house",
+        "conference",
+        "presentation",
+        "talk",
+        "seminar",
+        "bootcamp",
+        "training"
     ]
 
     """We then figure out which month"""
