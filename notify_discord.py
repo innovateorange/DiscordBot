@@ -26,7 +26,7 @@ def load_event_context():
     if not event_path:
         raise ValueError("GITHUB_EVENT_PATH environment variable is not set")
 
-    with open(event_path) as f:
+    with open(event_path, encoding="utf-8") as f:
         event = json.load(f)
 
     return event_name, event.get("action"), event
@@ -40,7 +40,7 @@ def load_user_map():
     Returns:
         dict: A dictionary mapping GitHub usernames to Discord user IDs.
     """
-    with open("user_map.json") as f:
+    with open("user_map.json", encoding="utf-8") as f:
         user_map = json.load(f)
 
         return user_map

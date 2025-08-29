@@ -23,7 +23,7 @@ class TestGetEvents(unittest.TestCase):
     def test_malformed_url(self, mock_parse):
         mock_parse.side_effect = Exception("Malformed URL")
         with self.assertRaises(RuntimeError) as context:
-            getEvents("http://malformed-url")
+            getEvents("http://malformed-url", "MOCK_TASK")
         self.assertIn("Failed to parse the RSS feed", str(context.exception))
 
     # Test that the function raises an error when the RSS feed is malformed
@@ -31,21 +31,21 @@ class TestGetEvents(unittest.TestCase):
     def test_malformed_rss_feed(self, mock_parse):
         mock_parse.return_value = MagicMock(bozo=True, bozo_exception="Malformed feed")
         with self.assertRaises(RuntimeError) as context:
-            getEvents("http://malformed-rss-feed.com/rss")
+            getEvents("http://malformed-rss-feed.com/rss", "MOCK_TASK")
         self.assertIn("Malformed RSS feed", str(context.exception))
 
     # Test that the function returns an empty list when no entries are found
     @patch("feedparser.parse")
     def test_invalid_url(self, mock_parse):
         mock_parse.return_value = {"entries": []}
-        result = getEvents("http://invalid-url.com/rss")
+        result = getEvents("http://invalid-url.com/rss", "MOCK_TASK")
         self.assertEqual(result, [])
 
     # Test with a valid URL (Should have more than 0 entries returned)
     @patch("feedparser.parse")
     def test_valid_url(self, mock_parse):
         mock_parse.return_value = sample_return
-        result = getEvents("http://valid-url.com/rss")
+        result = getEvents("http://valid-url.com/rss", "MOCK_TASK")
         self.assertGreater(len(result), 0)
 
     # Test that an event has no whenDate When the description does not contain "When:"
@@ -61,12 +61,11 @@ class TestGetEvents(unittest.TestCase):
                 }
             ]
         }
-        result = getEvents("http://valid-url.com/rss")
+        result = getEvents("http://valid-url.com/rss", "MOCK_TASK")
         self.assertEqual(result[0]["whenDate"], "")
         self.assertEqual(result[0]["Description"], "Some Description")
 
-    # Test that an event has no Location
-    # When the description does not contain "Location:"
+    # Test that an event has no Location when the description lacks "Location:"
     @patch("feedparser.parse")
     def test_no_Location_in_Description(self, mock_parse):
         mock_parse.return_value = {
@@ -79,7 +78,7 @@ class TestGetEvents(unittest.TestCase):
                 }
             ]
         }
-        result = getEvents("http://valid-url.com/rss")
+        result = getEvents("http://valid-url.com/rss", "MOCK_TASK")
         self.assertEqual(result[0]["Location"], "")
         self.assertEqual(result[0]["Description"], "Some Description")
 
@@ -87,19 +86,19 @@ class TestGetEvents(unittest.TestCase):
     @patch("feedparser.parse")
     def test_link_extraction(self, mock_parse):
         mock_parse.return_value = sample_return
-        result = getEvents("http://valid-url.com/rss")
+        result = getEvents("http://valid-url.com/rss", "MOCK_TASK")
         self.assertEqual(result[0]["link"], "http://example.com/event1")
 
     # Test that the published date is correctly extracted from the entry
     @patch("feedparser.parse")
     def test_pubDate_extraction(self, mock_parse):
         mock_parse.return_value = sample_return
-        result = getEvents("http://valid-url.com/rss")
+        result = getEvents("http://valid-url.com/rss", "MOCK_TASK")
         self.assertEqual(result[0]["pubDate"], "2023-09-30")
 
     # Test that the entryDate was recorded
     @patch("feedparser.parse")
     def test_entryDate_recorded(self, mock_parse):
         mock_parse.return_value = sample_return
-        result = getEvents("http://valid-url.com/rss")
+        result = getEvents("http://valid-url.com/rss", "MOCK_TASK")
         self.assertIn("entryDate", result[0])

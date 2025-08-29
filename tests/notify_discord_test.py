@@ -213,7 +213,7 @@ class TestNotifyDiscord(unittest.TestCase):
         with patch("builtins.open", mock_open(read_data=user_map_data)) as mock_file:
             result = notify_discord.load_user_map()
             assert result == {"user1": "123456789"}
-            mock_file.assert_called_once_with("user_map.json")
+            mock_file.assert_called_once_with("user_map.json", encoding="utf-8")
 
     def test_load_webhook_url(self):
         with patch("os.getenv", return_value="https://fake.webhook"):

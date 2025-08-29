@@ -12,9 +12,9 @@
 name: "CodeQL Advanced"
 on:
   push:
-    branches: ["main", "stage", "feature/*", "hotfix/*", "bugfix/*", "release/*", "stable/*"]
+    branches: ["release/*", "main"]
   pull_request:
-    branches: ["main", "stage", "feature/*", "hotfix/*", "bugfix/*", "release/*", "stable/*"]
+    branches: ["release/*", "main"]
   schedule:
     - cron: '15 0 * * 3'
 jobs:

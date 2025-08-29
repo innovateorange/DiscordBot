@@ -8,9 +8,9 @@
 
 # Any code within the data-collections directory
 # is owned by the following
-/data-collections @andewmark
+/data_collections @andewmark
 
 # Any code within the data-processing directory
 # is owned by the folllwing
-/data-processing @alantomw
+/data_processing/bot.py @alantomw
 

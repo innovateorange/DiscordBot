@@ -23,20 +23,71 @@ jobs:
           chmod +x setup.sh
           ./setup.sh
       
-      - name: Update runningCSV.csv with Events 
+      - name: Update runningCSV.csv with Jobs 
         env:
-          TASK_TYPE: "EVENTS"
-          EVENTS_RSS_URL: ${{ secrets.EVENTS_RSS_URL }}
+          TASK_TYPE: "JOBS"
+          JOBS_RSS: ${{ secrets.JOBS_RSS }}
         run: |
           source .virtualenv/bin/activate
           python -m data_collections.mainRSSRunner
 
-      - name: Commit changes
+      - name: Update runningCSV.csv with Internships 
+        env:
+          TASK_TYPE: "INTERNSHIPS"
+          INTERNSHIPS_RSS: ${{ secrets.INTERNSHIPS_RSS }}
+        run: |
+          source .virtualenv/bin/activate
+          python -m data_collections.mainRSSRunner
+
+      - name: Update runningCSV.csv with Information Session Events
+        env:
+          TASK_TYPE: "INFO_SESSION"
+          INFO_SESSION_RSS: ${{ secrets.INFO_SESSION_RSS }}
+        run: |
+          source .virtualenv/bin/activate
+          python -m data_collections.mainRSSRunner
+      
+      - name: Update runningCSV.csv with Workshop Events
+        env:
+          TASK_TYPE: "WORKSHOP"
+          WORKSHOP_RSS: ${{ secrets.WORKSHOP_RSS }}
+        run: |
+          source .virtualenv/bin/activate
+          python -m data_collections.mainRSSRunner
+
+      - name: Update runningCSV.csv with Speaker/Panel Events
+        env:
+          TASK_TYPE: "SPEAKER_PANEL"
+          WORKSHOP_RSS: ${{ secrets.SPEAKER_PANEL_RSS }}
+        run: |
+          source .virtualenv/bin/activate
+          python -m data_collections.mainRSSRunner
+
+      - name: Update runningCSV.csv with Other Events
+        env:
+          TASK_TYPE: "OTHER"
+          WORKSHOP_RSS: ${{ secrets.OTHER_RSS }}
+        run: |
+          source .virtualenv/bin/activate
+          python -m data_collections.mainRSSRunner
+      
+      - name: Update runningCSV.csv with Career Fair Events
+        env:
+          TASK_TYPE: "CAREER_FAIR"
+          WORKSHOP_RSS: ${{ secrets.CAREER_FAIR_RSS }}
+        run: |
+          source .virtualenv/bin/activate
+          python -m data_collections.mainRSSRunner
+
+      - name: Commit & push changes if any
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
-          git add .
-          git commit -m 'Update runningCSV.csv'
-      - name: Check for changes
-        run: |
-          git diff --exit-code
+          
+          if ! git diff --quiet; then
+            git add data_collections/runningCSV.csv
+            git commit -m 'Update runningCSV.csv'
+            git push origin main
+          else
+            echo "No changes to commit."
+          fi
