@@ -1,10 +1,11 @@
 """Referenced from bot.py and filters and returns
 jobs that match the inputted criteria.
 """
+import discord
 
 from datetime import datetime
 from typing import Any
-
+from discord.ext import commands
 from data_processing.get_type_data import (
     get_type_data,
 )
@@ -49,21 +50,20 @@ def filter_jobs(jobs: list[dict[str, Any]], _filters: str) -> list[dict[str, Any
     return filtered_jobs
 
 
-def format_jobs_message(jobs: list[dict[str, Any]], _filters: str) -> str:
+def format_jobs_message(jobs: list[dict[str, Any]], _filters: str = "") -> tuple[list[discord.Embed], str | None]:
     """
-    Formats job results into a Discord message.
+    Formats job results into Discord embeds and an optional summary string.
 
     Args:
         jobs (list): List of job dictionaries
         _filters (str, optional): Applied filters for context
 
     Returns:
-        str: Formatted message string
+        tuple: (List of discord.Embed objects, Optional additional jobs string)
     """
     if not jobs:
-        return "💼 No jobs found matching your criteria."
-    filter_text = f" (Filters: {_filters.strip()})" if _filters else ""
-    message = f"💼 **Found {len(jobs)} job(s):{filter_text}**\n\n"
+        return [], "💼 No jobs found matching your criteria."
+    embeds = []
     limited_jobs = jobs[:5]
     for job in limited_jobs:
         title = job.get("Title", "Untitled Position")
@@ -93,23 +93,24 @@ def format_jobs_message(jobs: list[dict[str, Any]], _filters: str) -> str:
             except Exception:
                 formatted_pub_date = pub_date
 
-        job_text = f"**{title}**\n"
-        job_text += f"📝 {job_type}\n"
-        job_text += f"🏢 {company_name}\n"
+        embed = discord.Embed(title=title, description=description, color=0x00ff00)
+        embed.add_field(name="Type", value=job_type, inline=False)
+        embed.add_field(name="Company", value=company_name, inline=False)
         if location_str.strip():
-            job_text += f"📍 {location_str}\n"
+            embed.add_field(name="Location", value=location_str, inline=False)
         if when_date:
-            job_text += f"📅 Start Date: {when_date}\n"
+            embed.add_field(name="Start Date", value=when_date, inline=False)
         if pub_date:
-            job_text += f"📅 Posted: {formatted_pub_date}\n"
+            embed.add_field(name="Posted", value=formatted_pub_date, inline=False)
         if description:
-            job_text += f"📝 {description}\n"
+            embed.add_field(name="Description", value=description, inline=False)
         if link:
-            job_text += f"🔗 [Apply Here](<{link}>)\n"
-        message += job_text + "\n"
+            embed.add_field(name="Apply Here", value=f"[Link]({link})", inline=False)
+        embeds.append(embed)
+    additional_jobs = None
     if len(jobs) > 5:
-        message += f"... and {len(jobs) - 5} more jobs. Use more specific filters to narrow results."  # noqa: E501
-    return message
+        additional_jobs = f"... and {len(jobs) - 5} more jobs. Use more specific filters to narrow results."
+    return embeds, additional_jobs
 
 
 def get_jobs(csv_file_path: str) -> list[dict[str, Any]]:

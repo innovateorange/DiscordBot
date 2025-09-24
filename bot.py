@@ -169,18 +169,14 @@ async def jobs(ctx, *, args: str = "") -> None:
     - !jobs python internship summer
     - !jobs microsoft internship
     """
-    csv_file_path = "data_collections/runningCSV.csv"
-    try:
-        _jobs = get_jobs(csv_file_path)
-    except (OSError, RuntimeError):
-        await ctx.send(
-            "Sorry, there was an error searching for jobs. Please try again later."
-        )
-    else:
-        args = args.strip()
-        _jobs = filter_jobs(_jobs, args)
-        message = format_jobs_message(_jobs, args)
-        await ctx.send(message)
+    csv_path = "data_collections/runningCSV.csv"  # Adjust path if needed
+    jobs = get_jobs(csv_path)
+    filtered = filter_jobs(jobs, args)
+    embeds, summary = format_jobs_message(filtered, args)
+    for embed in embeds:
+        await ctx.send(embed=embed)
+    if summary:
+        await ctx.send(summary)
 
 
 def run_bot() -> None:
