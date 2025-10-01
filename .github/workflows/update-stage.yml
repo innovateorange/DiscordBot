@@ -1,0 +1,62 @@
+name: Update stage branch from main
+on:
+  schedule:
+    - cron: "0 4 1,15 * *"
+  workflow_dispatch:
+jobs:
+  create-pr-main-to-stage:
+    runs-on: ubuntu-latest
+    env:
+      SOURCE_BRANCH: main
+      TARGET_BRANCH: stage
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.SOURCE_BRANCH }}
+          fetch-depth: 0
+      - name: Create or update PR from main to stage
+        run: |
+          git fetch origin --prune
+          git fetch origin ${TARGET_BRANCH}
+
+          # Check for new commits from source to target
+          NEW_COMMITS=$(git log origin/${TARGET_BRANCH}..origin/${SOURCE_BRANCH} --oneline)
+
+          if [ -z "$NEW_COMMITS" ]; then
+            echo "No new commits to create PR. ${SOURCE_BRANCH} and ${TARGET_BRANCH} are in sync."
+            exit 0
+          fi
+
+          echo "Found new commits to merge:"
+          echo "$NEW_COMMITS"
+
+          # Check if a PR already exists
+          EXISTING_PR=$(gh pr list --base ${TARGET_BRANCH} --head ${SOURCE_BRANCH} --json number --jq '.[0].number')
+
+          if [ -z "$EXISTING_PR" ]; then
+            # Create new PR with multi-line body
+            PR_BODY="Automated update of stage branch from main branch.
+
+          This PR is automatically created by the update-stage workflow.
+
+          🤖 Generated with GitHub Actions"
+
+            # Create PR and capture the URL, then extract the PR number
+            PR_URL=$(gh pr create \
+              --base ${TARGET_BRANCH} \
+              --head ${SOURCE_BRANCH} \
+              --title "Update stage from main" \
+              --body "$PR_BODY")
+
+            PR_NUMBER=$(echo "$PR_URL" | grep -oE '[0-9]+$')
+            echo "Created PR #$PR_NUMBER at $PR_URL"
+          else
+            PR_NUMBER=$EXISTING_PR
+            echo "PR #$PR_NUMBER already exists from ${SOURCE_BRANCH} to ${TARGET_BRANCH}"
+          fi
+
+          # Auto-merge the PR with admin privileges to bypass branch protection
+          echo "Auto-merging PR #$PR_NUMBER with admin privileges"
+          gh pr merge $PR_NUMBER --squash --admin

@@ -48,6 +48,16 @@ class TestCSClubBot(unittest.IsolatedAsyncioTestCase):
         self.ctx.send.assert_called()
         self.assertIn("FreeCodeCamp", self.ctx.send.call_args[0][0])
 
+    @patch("builtins.print")
+    async def test_on_ready_prints_logged_in(self, mock_print):
+        """Ensure on_ready prints a logged-in message."""
+        bot.dispatch("ready")
+        await asyncio.sleep(0)
+        mock_print.assert_called()
+        # Don't assert exact string to avoid brittle formatting; ensure prefix present
+        args, _ = mock_print.call_args
+        self.assertTrue(str(args[0]).startswith("✅ Logged in as"))
+
     @patch("bot.load_dotenv", return_value=False)
     def test_no_env(self, mock_load_dotenv):
         """Test if there is no environment file"""
@@ -87,6 +97,25 @@ class TestCSClubBot(unittest.IsolatedAsyncioTestCase):
         """Test if .env is found and DISCORD_BOT_TOKEN is valid"""
         run_bot()
         mock_bot_run.assert_called_once_with("valid_token")
+
+    async def test_jobs_success_path(self):
+        """jobs command sends formatted message on success."""
+        with patch("bot.get_jobs", return_value=[{"id": 1}]) as mock_get, \
+            patch("bot.filter_jobs", side_effect=lambda jobs, args: jobs) as mock_filter, \
+            patch("bot.format_jobs_message", return_value="formatted") as mock_format:
+            await bot.get_command("jobs").callback(self.ctx, args="python remote")
+            mock_get.assert_called_once()
+            mock_filter.assert_called_once()
+            mock_format.assert_called_once()
+            self.ctx.send.assert_called_once_with("formatted")
+
+    async def test_jobs_error_path(self):
+        """jobs command reports error message on exceptions from get_jobs."""
+        with patch("bot.get_jobs", side_effect=OSError("boom")) as mock_get:
+            await bot.get_command("jobs").callback(self.ctx, args="anything")
+            mock_get.assert_called_once()
+            self.ctx.send.assert_called_once()
+            self.assertIn("there was an error", self.ctx.send.call_args[0][0])
 
     async def test_on_member_join_success(self):
         """Test on_member_join event sends welcome message successfully."""
@@ -138,61 +167,6 @@ class TestCSClubBot(unittest.IsolatedAsyncioTestCase):
 
         expected_message = f"Welcome to **Test Server**, {mock_member.mention}! Feel free to introduce yourself in #networking"  # noqa: E501
         mock_welcome_channel.send.assert_called_once_with(expected_message)
-
-    async def test_on_member_join_fallback_to_general(self):
-        """Test on_member_join falls back to 'general' channel."""
-        mock_member = MagicMock(spec=discord.Member)
-        mock_member.mention = "<@12345>"
-        mock_member.display_name = "TestUser"
-        mock_member.guild = MagicMock(spec=discord.Guild)
-        mock_member.guild.name = "Test Server"
-
-        mock_general_channel = MagicMock(spec=discord.TextChannel)
-        mock_general_channel.name = "general"
-        mock_general_channel.send = AsyncMock()
-
-        mock_member.guild.text_channels = [mock_general_channel]
-        mock_member.guild.system_channel = None
-
-        bot.dispatch("member_join", mock_member)
-        await asyncio.sleep(0)
-
-        mock_general_channel.send.assert_called_once()
-
-    async def test_on_member_join_fallback_to_system_channel(self):
-        """Test on_member_join falls back to system channel."""
-        mock_member = MagicMock(spec=discord.Member)
-        mock_member.display_name = "TestUser"
-        mock_member.guild = MagicMock(spec=discord.Guild)
-
-        mock_system_channel = MagicMock(spec=discord.TextChannel)
-        mock_system_channel.send = AsyncMock()
-
-        mock_member.guild.text_channels = []
-        mock_member.guild.system_channel = mock_system_channel
-
-        bot.dispatch("member_join", mock_member)
-        await asyncio.sleep(0)
-
-        mock_system_channel.send.assert_called_once()
-
-    async def test_on_member_join_fallback_to_first_channel(self):
-        """Test on_member_join falls back to the first available text channel."""
-        mock_member = MagicMock(spec=discord.Member)
-        mock_member.display_name = "TestUser"
-        mock_member.guild = MagicMock(spec=discord.Guild)
-
-        mock_first_channel = MagicMock(spec=discord.TextChannel)
-        mock_first_channel.name = "random"
-        mock_first_channel.send = AsyncMock()
-
-        mock_member.guild.text_channels = [mock_first_channel]
-        mock_member.guild.system_channel = None
-
-        bot.dispatch("member_join", mock_member)
-        await asyncio.sleep(0)
-
-        mock_first_channel.send.assert_called_once()
 
     async def test_on_member_join_no_channels_fallback_to_dm(self):
         """Test on_member_join falls back to DM when no channels are available."""

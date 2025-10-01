@@ -51,21 +51,16 @@ async def on_member_join(member: discord.Member) -> None:
     sends a direct message to the new member. The welcome message
     includes a mention of the "networking" channel if it exists.
     """
-    # Try to find a welcome channel (common names: welcome, general, etc.)
+    # Try to find a dedicated welcome channel only
     welcome_channel: discord.TextChannel | None = None
 
-    # Look for common welcome channel names
+    # Prefer dedicated welcome channels only; do not fall back to other channels
     for channel in member.guild.text_channels:
-        if channel.name.lower() in ["welcome", "general", "introductions", "lobby"]:
+        if channel.name.lower() in ["welcome", "welcomes"]:
             welcome_channel = channel
             break
 
-    # If no specific welcome channel found, use the first available text channel
-    if not welcome_channel:
-        if member.guild.system_channel:
-            welcome_channel = member.guild.system_channel
-        elif member.guild.text_channels:
-            welcome_channel = member.guild.text_channels[0]
+    # If no dedicated welcome channel is found, do not post in other channels
 
     # Find networking channel for clickable link
     networking_channel: discord.TextChannel | None = None
